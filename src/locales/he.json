@@ -1,0 +1,338 @@
+{
+  "common": {
+    "loading": "טוען...",
+    "error": "שגיאה",
+    "success": "הצלחה",
+    "submit": "שלח",
+    "cancel": "בטל",
+    "save": "שמור",
+    "delete": "מחק",
+    "edit": "ערוך",
+    "close": "סגור",
+    "retry": "נסה שוב",
+    "back": "חזור",
+    "next": "הבא",
+    "continue": "המשך",
+    "finish": "סיים"
+  },
+  "navigation": {
+    "home": "בית",
+    "login": "התחברות",
+    "register": "הרשמה",
+    "survey": "שאלון",
+    "dashboard": "דשבורד",
+    "profile": "פרופיל",
+    "settings": "הגדרות",
+    "logout": "התנתק",
+    "languageToggle": "English"
+  },
+  "homeScreen": {
+    "title": "ברוכים הבאים למנטור הקריירה של AI",
+    "subtitle": "העוזר האישי שלך לפיתוח קריירה",
+    "description": "גלה את מסלול הקריירה האידיאלי שלך עם הדרכה מונעת בינה מלאכותית. מלא את השאלון המקיף שלנו וקבל תוכנית פיתוח קריירה אישית המותאמת לניסיון, לתחומי העניין והמטרות שלך.",
+    "heroText": "שנה את מסע הקריירה שלך",
+    "features": {
+      "title": "למה לבחור במנטור הקריירה של AI?",
+      "personalized": {
+        "title": "הדרכה אישית",
+        "description": "קבל ייעוץ קריירה המותאם במיוחד לרקע ולשאיפות שלך"
+      },
+      "aiPowered": {
+        "title": "תובנות מונעות AI",
+        "description": "נצל טכנולוגיית בינה מלאכותית חדישה לניתוח קריירה מקיף"
+      },
+      "actionable": {
+        "title": "תוכניות מעשיות",
+        "description": "קבל תוכניות פיתוח קריירה שלב אחר שלב שתוכל ליישם מיד"
+      }
+    },
+    "cta": {
+      "getStarted": "התחל עכשיו",
+      "learnMore": "למד עוד",
+      "loginPrompt": "כבר יש לך חשבון?",
+      "registerPrompt": "חדש במנטור הקריירה?",
+      "signInLink": "התחבר כאן"
+    }
+  },
+  "loginScreen": {
+    "title": "ברוך שובך",
+    "subtitle": "התחבר כדי להמשיך את מסע הקריירה שלך",
+    "email": "כתובת אימייל",
+    "emailPlaceholder": "הכנס את כתובת האימייל שלך",
+    "password": "סיסמה",
+    "passwordPlaceholder": "הכנס את הסיסמה שלך",
+    "login": "התחבר",
+    "loggingIn": "מתחבר...",
+    "forgotPassword": "שכחת סיסמה?",
+    "noAccount": "אין לך חשבון?",
+    "signUpLink": "הירשם כאן",
+    "rememberMe": "זכור אותי",
+    "errors": {
+      "loginFailed": "ההתחברות נכשלה. בדוק את הפרטים שלך.",
+      "networkError": "שגיאת רשת. נסה שוב.",
+      "invalidCredentials": "אימייל או סיסמה לא חוקיים",
+      "emailRequired": "נדרש אימייל",
+      "passwordRequired": "נדרשת סיסמה",
+      "invalidEmail": "אנא הכנס כתובת אימייל חוקית"
+    }
+  },
+  "registerScreen": {
+    "title": "צור את החשבון שלך",
+    "subtitle": "הצטרף לאלפים ששינו את הקריירה שלהם",
+    "email": "כתובת אימייל",
+    "emailPlaceholder": "הכנס את כתובת האימייל שלך",
+    "password": "סיסמה",
+    "passwordPlaceholder": "צור סיסמה חזקה",
+    "confirmPassword": "אימות סיסמה",
+    "confirmPasswordPlaceholder": "אמת את הסיסמה שלך",
+    "register": "צור חשבון",
+    "registering": "יוצר חשבון...",
+    "hasAccount": "כבר יש לך חשבון?",
+    "signInLink": "התחבר כאן",
+    "termsAgreement": "על ידי יצירת חשבון, אתה מסכים לתנאי השימוש ולמדיניות הפרטיות שלנו",
+    "passwordStrength": {
+      "label": "חוזק הסיסמה",
+      "veryWeak": "חלש מאוד",
+      "weak": "חלש",
+      "good": "טוב",
+      "strong": "חזק"
+    },
+    "passwordRequirements": {
+      "title": "הסיסמה חייבת להכיל:",
+      "length": "לפחות 8 תווים",
+      "uppercase": "אות גדולה אחת",
+      "lowercase": "אות קטנה אחת",
+      "number": "מספר אחד",
+      "special": "תו מיוחד אחד"
+    },
+    "messages": {
+      "success": "החשבון נוצר בהצלחה! מפנה להתחברות...",
+      "registrationComplete": "ההרשמה הושלמה!"
+    },
+    "errors": {
+      "registrationFailed": "ההרשמה נכשלה. נסה שוב.",
+      "emailExists": "כבר קיים חשבון עם האימייל הזה",
+      "passwordTooShort": "הסיסמה חייבת להיות באורך של לפחות 8 תווים",
+      "passwordTooWeak": "הסיסמה חלשה מדי. אנא הוסף אותיות גדולות, קטנות ומספרים",
+      "passwordMismatch": "הסיסמאות לא תואמות",
+      "invalidEmail": "אנא הכנס כתובת אימייל חוקית",
+      "networkError": "שגיאת רשת. נסה שוב.",
+      "emailRequired": "נדרש אימייל",
+      "passwordRequired": "נדרשת סיסמה",
+      "confirmPasswordRequired": "אנא אמת את הסיסמה שלך"
+    }
+  },
+  "surveyScreen": {
+    "title": "שאלון גילוי קריירה",
+    "subtitle": "עזור לנו להבין את השאיפות המקצועיות שלך",
+    "description": "השאלון המקיף הזה יעזור לבינה המלאכותית שלנו ליצור תוכנית פיתוח קריירה אישית עבורך.",
+    "progress": "שלב {{current}} מתוך {{total}}",
+    "sections": {
+      "personal": "מידע אישי",
+      "experience": "ניסיון מקצועי",
+      "interests": "תחומי עניין והעדפות",
+      "goals": "מטרות קריירה"
+    },
+    "experience": {
+      "label": "מה רמת הניסיון הנוכחית שלך?",
+      "description": "בחר את הרמה שמתארת הכי טוב את הניסיון המקצועי שלך",
+      "options": {
+        "student": "סטודנט / בוגר חדש",
+        "junior": "זוטר (0-2 שנים)",
+        "mid": "בינוני (3-5 שנים)",
+        "senior": "בכיר (6-10 שנים)",
+        "lead": "מוביל / מנהל (10+ שנים)",
+        "executive": "מנהל בכיר / דירקטוריון"
+      }
+    },
+    "interests": {
+      "label": "אילו תחומים מעניינים אותך הכי הרבה?",
+      "description": "בחר את כל הרלוונטיים - זה עוזר לנו להבין את ההעדפות שלך",
+      "options": {
+        "frontend": "פיתוח חזית",
+        "backend": "פיתוח עורף",
+        "fullstack": "פיתוח פול-סטאק",
+        "mobile": "פיתוח מובייל",
+        "ai": "בינה מלאכותית",
+        "ml": "למידת מכונה",
+        "data": "מדעי הנתונים",
+        "cyber": "אבטחת מידע",
+        "devops": "DevOps / ענן",
+        "product": "ניהול מוצר",
+        "design": "עיצוב UI/UX",
+        "qa": "בדיקות איכות",
+        "blockchain": "בלוקצ'יין",
+        "iot": "אינטרנט הדברים"
+      }
+    },
+    "skills": {
+      "label": "מהן הכישורים הטכניים החזקים ביותר שלך?",
+      "placeholder": "למשל: JavaScript, Python, React, SQL, AWS..."
+    },
+    "goal": {
+      "label": "מה המטרה המקצועית העיקרית שלך?",
+      "description": "היה ספציפי ככל האפשר - זה עוזר ליצור תוכנית ממוקדת",
+      "placeholder": "למשל: להפוך למפתח פול-סטאק בסטארט-אפ טכנולוגי תוך 18 חודשים",
+      "examples": {
+        "title": "דוגמאות למטרות:",
+        "items": [
+          "מעבר ממרקטינג לעיצוב UX תוך שנה",
+          "התקדמות לתפקיד מפתח בכיר עם התמחות ב-AI",
+          "הקמת חברת טכנולוגיה משלי בתחום הפינטק",
+          "מעבר לתפקיד הובלה טכנית"
+        ]
+      }
+    },
+    "timeline": {
+      "label": "מה לוח הזמנים המטרה שלך?",
+      "options": {
+        "immediate": "מיידי (0-3 חודשים)",
+        "short": "קצר מועד (3-6 חודשים)",
+        "medium": "בינוני (6-12 חודשים)",
+        "long": "ארוך טווח (1-2 שנים)",
+        "extended": "מורחב (2+ שנים)"
+      }
+    },
+    "budget": {
+      "label": "מה התקציב שלך ללמידה?",
+      "description": "זה עוזר לנו להמליץ על משאבים מתאימים",
+      "options": {
+        "free": "משאבים חינמיים בלבד",
+        "low": "מתחת ל-500$",
+        "medium": "500$ - 2000$",
+        "high": "2000$ - 5000$",
+        "unlimited": "ללא מגבלות תקציב"
+      }
+    },
+    "submit": "צור את תוכנית הקריירה שלי",
+    "submitting": "יוצר את התוכנית האישית שלך...",
+    "aiPlan": "תוכנית הקריירה שלך מ-AI",
+    "navigation": {
+      "previous": "קודם",
+      "next": "הבא",
+      "skip": "דלג"
+    },
+    "validation": {
+      "experienceRequired": "אנא בחר את רמת הניסיון שלך",
+      "interestsRequired": "אנא בחר לפחות תחום עניין אחד",
+      "goalRequired": "אנא הכנס את מטרת הקריירה שלך",
+      "goalTooShort": "אנא ספק פרטים נוספים על המטרה שלך"
+    },
+    "messages": {
+      "saveSuccess": "השאלון נשמר בהצלחה!",
+      "submitSuccess": "השאלון נשלח! יוצר את התוכנית שלך...",
+      "noAiResponse": "לא התקבלה תשובה מה-AI. נסה שוב.",
+      "submitError": "נכשל לשלוח את השאלון. נסה שוב."
+    }
+  },
+  "dashboardScreen": {
+    "title": "דשבורד הקריירה שלך",
+    "subtitle": "עקוב אחר ההתקדמות שלך וחקור הזדמנויות",
+    "welcome": "ברוך שובך, {{name}}!",
+    "surveyCompletedOn": "השאלון הושלם בתאריך",
+    "sections": {
+      "overview": "סקירה כללית",
+      "currentPlan": "התוכנית הנוכחית",
+      "progress": "מעקב התקדמות",
+      "resources": "משאבים מומלצים",
+      "achievements": "הישגים"
+    },
+    "currentPlan": {
+      "title": "תוכנית הקריירה שלך מ-AI",
+      "lastUpdated": "עודכן לאחרונה: {{date}}",
+      "regenerate": "עדכן תוכנית",
+      "download": "הורד PDF",
+      "share": "שתף תוכנית"
+    },
+    "stats": {
+      "plansGenerated": "תוכניות שנוצרו",
+      "goalsCompleted": "מטרות שהושלמו",
+      "daysActive": "ימים פעילים",
+      "skillsLearned": "כישורים שנלמדו"
+    },
+    "quickActions": {
+      "title": "פעולות מהירות",
+      "retakeSurvey": "מלא שאלון מחדש",
+      "updateGoals": "עדכן מטרות",
+      "viewResources": "צפה במשאבים",
+      "trackProgress": "עקוב אחר התקדמות"
+    },
+    "recentActivity": {
+      "title": "פעילות אחרונה",
+      "noActivity": "אין פעילות אחרונה"
+    },
+    "messages": {
+      "noPlan": "לא נמצאה תוכנית קריירה. מלא את השאלון כדי להתחיל!",
+      "planGenerated": "תוכנית הקריירה החדשה שלך נוצרה!",
+      "fetchError": "לא ניתן לטעון את נתוני הדשבורד. אנא רענן.",
+      "updateSuccess": "הדשבורד עודכן בהצלחה"
+    }
+  },
+  "planDisplay": {
+    "title": "תוכנית הקריירה האישית שלך",
+    "generatedOn": "נוצר ב-{{date}}",
+    "estimatedDuration": "משך זמן משוער: {{duration}}",
+    "sections": {
+      "summary": "סיכום מנהלים",
+      "milestones": "אבני דרך מרכזיות",
+      "resources": "משאבי למידה",
+      "timeline": "לוח זמנים",
+      "nextSteps": "הצעדים הבאים"
+    },
+    "actions": {
+      "print": "הדפס תוכנית",
+      "download": "הורד PDF",
+      "email": "שלח לי באימייל",
+      "regenerate": "צור תוכנית חדשה"
+    }
+  },
+  "header": {
+    "navigation": {
+      "home": "בית",
+      "survey": "שאלון",
+      "dashboard": "דשבורד",
+      "resources": "משאבים",
+      "about": "אודות",
+      "appName": "מנטור הקריירה"
+    },
+    "userMenu": {
+      "profile": "פרופיל",
+      "settings": "הגדרות",
+      "help": "עזרה",
+      "logout": "התנתק"
+    },
+    "notifications": {
+      "title": "התראות",
+      "noNotifications": "אין התראות חדשות"
+    }
+  },
+  "footer": {
+    "company": "מנטור הקריירה של AI",
+    "copyright": "© {{year}} מנטור הקריירה של AI. כל הזכויות שמורות.",
+    "links": {
+      "privacy": "מדיניות פרטיות",
+      "terms": "תנאי שימוש",
+      "contact": "צור קשר",
+      "help": "מרכז עזרה"
+    },
+    "social": {
+      "follow": "עקבו אחרינו ב"
+    }
+  },
+  "errors": {
+    "generic": "משהו השתבש. נסה שוב.",
+    "network": "שגיאת רשת. בדוק את החיבור שלך.",
+    "unauthorized": "אנא התחבר כדי להמשיך.",
+    "forbidden": "אין לך הרשאה לגשת לזה.",
+    "notFound": "המשאב המבוקש לא נמצא.",
+    "validation": "אנא בדוק את הקלט שלך ונסה שוב.",
+    "server": "שגיאת שרת. נסה שוב מאוחר יותר."
+  },
+  "loading": {
+    "default": "טוען...",
+    "authenticating": "מאמת...",
+    "generating": "יוצר את התוכנית שלך...",
+    "saving": "שומר...",
+    "processing": "מעבד..."
+  }
+}

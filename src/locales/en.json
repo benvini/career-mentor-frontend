@@ -1,0 +1,364 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "retry": "Retry",
+    "back": "Back",
+    "next": "Next",
+    "continue": "Continue",
+    "finish": "Finish"
+  },
+  "navigation": {
+    "home": "Home",
+    "login": "Login",
+    "register": "Register",
+    "survey": "Survey",
+    "dashboard": "Dashboard",
+    "profile": "Profile",
+    "settings": "Settings",
+    "logout": "Logout",
+    "languageToggle": "עברית"
+  },
+  "homeScreen": {
+    "title": "Welcome to AI Career Mentor",
+    "subtitle": "Your Personal Career Development Assistant",
+    "description": "Discover your ideal career path with AI-powered guidance. Take our comprehensive survey and receive a personalized career development plan tailored to your experience, interests, and goals.",
+    "heroText": "Transform Your Career Journey",
+    "features": {
+      "title": "Why Choose AI Career Mentor?",
+      "personalized": {
+        "title": "Personalized Guidance",
+        "description": "Get career advice tailored specifically to your background and aspirations"
+      },
+      "aiPowered": {
+        "title": "AI-Powered Insights",
+        "description": "Leverage cutting-edge AI technology for comprehensive career analysis"
+      },
+      "actionable": {
+        "title": "Actionable Plans",
+        "description": "Receive step-by-step career development plans you can implement immediately"
+      }
+    },
+    "cta": {
+      "getStarted": "Get Started",
+      "learnMore": "Learn More",
+      "loginPrompt": "Already have an account?",
+      "registerPrompt": "New to AI Career Mentor?",
+      "signInLink": "Sign in here"
+    }
+  },
+  "loginScreen": {
+    "title": "Welcome Back",
+    "subtitle": "Sign in to continue your career journey",
+    "email": "Email Address",
+    "emailPlaceholder": "Enter your email address",
+    "password": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "login": "Sign In",
+    "loggingIn": "Signing in...",
+    "forgotPassword": "Forgot Password?",
+    "noAccount": "Don't have an account?",
+    "signUpLink": "Sign up here",
+    "rememberMe": "Remember me",
+    "errors": {
+      "loginFailed": "Login failed. Please check your credentials.",
+      "networkError": "Network error. Please try again.",
+      "invalidCredentials": "Invalid email or password",
+      "emailRequired": "Email is required",
+      "passwordRequired": "Password is required",
+      "invalidEmail": "Please enter a valid email address"
+    }
+  },
+  "registerScreen": {
+    "title": "Create Your Account",
+    "subtitle": "Join thousands who've transformed their careers",
+    "email": "Email Address",
+    "emailPlaceholder": "Enter your email address",
+    "password": "Password",
+    "passwordPlaceholder": "Create a strong password",
+    "confirmPassword": "Confirm Password",
+    "confirmPasswordPlaceholder": "Confirm your password",
+    "register": "Create Account",
+    "registering": "Creating account...",
+    "hasAccount": "Already have an account?",
+    "signInLink": "Sign in here",
+    "termsAgreement": "By creating an account, you agree to our Terms of Service and Privacy Policy",
+    "passwordStrength": {
+      "label": "Password Strength",
+      "veryWeak": "Very Weak",
+      "weak": "Weak",
+      "good": "Good",
+      "strong": "Strong"
+    },
+    "passwordRequirements": {
+      "title": "Password must contain:",
+      "length": "At least 8 characters",
+      "uppercase": "One uppercase letter",
+      "lowercase": "One lowercase letter",
+      "number": "One number",
+      "special": "One special character"
+    },
+    "messages": {
+      "success": "Account created successfully! Redirecting to login...",
+      "registrationComplete": "Registration Complete!"
+    },
+    "errors": {
+      "registrationFailed": "Registration failed. Please try again.",
+      "emailExists": "An account with this email already exists",
+      "passwordTooShort": "Password must be at least 8 characters long",
+      "passwordTooWeak": "Password is too weak. Please include uppercase, lowercase, and numbers",
+      "passwordMismatch": "Passwords do not match",
+      "invalidEmail": "Please enter a valid email address",
+      "networkError": "Network error. Please try again.",
+      "emailRequired": "Email is required",
+      "passwordRequired": "Password is required",
+      "confirmPasswordRequired": "Please confirm your password"
+    }
+  },
+  "surveyScreen": {
+    "title": "Career Discovery Survey",
+    "subtitle": "Help us understand your career aspirations",
+    "description": "This comprehensive survey will help our AI create a personalized career development plan for you.",
+    "progress": "Step {{current}} of {{total}}",
+    "surveyButton": "Take Survey",
+    "aiPlanResponseLabel": "AI Generated Career Plan",
+    "sections": {
+      "personal": "Personal Information",
+      "experience": "Professional Experience",
+      "interests": "Interests & Preferences",
+      "goals": "Career Goals"
+    },
+    "experience": {
+      "label": "What's your current experience level?",
+      "description": "Select the level that best describes your professional experience",
+      "options": {
+        "student": "Student / Recent Graduate",
+        "junior": "Junior (0-2 years)",
+        "mid": "Mid-level (3-5 years)",
+        "senior": "Senior (6-10 years)",
+        "lead": "Lead / Manager (10+ years)",
+        "executive": "Executive / C-Level"
+      }
+    },
+    "interests": {
+      "label": "Which areas interest you most?",
+      "description": "Select all that apply - this helps us understand your preferences",
+      "options": {
+        "frontend": "Frontend Development",
+        "backend": "Backend Development",
+        "fullstack": "Full Stack Development",
+        "mobile": "Mobile Development",
+        "ai": "Artificial Intelligence",
+        "ml": "Machine Learning",
+        "data": "Data Science",
+        "cyber": "Cybersecurity",
+        "devops": "DevOps / Cloud",
+        "product": "Product Management",
+        "design": "UI/UX Design",
+        "qa": "Quality Assurance",
+        "blockchain": "Blockchain",
+        "iot": "Internet of Things"
+      }
+    },
+    "skills": {
+      "label": "What are your strongest technical skills?",
+      "placeholder": "e.g., JavaScript, Python, React, SQL, AWS..."
+    },
+    "goal": {
+      "label": "What's your primary career goal?",
+      "description": "Be as specific as possible - this helps create a targeted plan",
+      "placeholder": "e.g., Become a full-stack developer at a tech startup within 18 months",
+      "examples": {
+        "title": "Example goals:",
+        "items": [
+          "Transition from marketing to UX design within 1 year",
+          "Advance to senior developer role with AI specialization",
+          "Start my own tech company in the fintech space",
+          "Move into technical leadership position"
+        ]
+      }
+    },
+    "timeline": {
+      "label": "What's your target timeline?",
+      "options": {
+        "immediate": "Immediate (0-3 months)",
+        "short": "Short-term (3-6 months)",
+        "medium": "Medium-term (6-12 months)",
+        "long": "Long-term (1-2 years)",
+        "extended": "Extended (2+ years)"
+      }
+    },
+    "budget": {
+      "label": "What's your learning budget?",
+      "description": "This helps us recommend appropriate resources",
+      "options": {
+        "free": "Free resources only",
+        "low": "Under $500",
+        "medium": "$500 - $2000",
+        "high": "$2000 - $5000",
+        "unlimited": "No budget constraints"
+      }
+    },
+    "submit": "Generate My Career Plan",
+    "submitting": "Creating your personalized plan...",
+    "aiPlan": "Your AI Career Plan",
+    "navigation": {
+      "previous": "Previous",
+      "next": "Next",
+      "skip": "Skip"
+    },
+    "validation": {
+      "experienceRequired": "Please select your experience level",
+      "interestsRequired": "Please select at least one area of interest",
+      "goalRequired": "Please enter your career goal",
+      "goalTooShort": "Please provide more detail about your goal"
+    },
+    "messages": {
+      "saveSuccess": "Survey saved successfully!",
+      "submitSuccess": "Survey submitted! Generating your plan...",
+      "noAiResponse": "No response received from AI. Please try again.",
+      "submitError": "Failed to submit survey. Please try again."
+    }
+  },
+  "dashboardScreen": {
+    "title": "Your Career Dashboard",
+    "subtitle": "Track your progress and explore opportunities",
+    "welcome": "Welcome back, {{name}}!",
+    "surveyCompletedOn": "Survey completed on",
+    "sections": {
+      "overview": "Overview",
+      "currentPlan": "Current Plan",
+      "progress": "Progress Tracking",
+      "resources": "Recommended Resources",
+      "achievements": "Achievements"
+    },
+    "currentPlan": {
+      "title": "Your AI Career Plan",
+      "lastUpdated": "Last updated: {{date}}",
+      "regenerate": "Update Plan",
+      "download": "Download PDF",
+      "share": "Share Plan"
+    },
+    "stats": {
+      "plansGenerated": "Plans Generated",
+      "goalsCompleted": "Goals Completed",
+      "daysActive": "Days Active",
+      "skillsLearned": "Skills Learned"
+    },
+    "quickActions": {
+      "title": "Quick Actions",
+      "retakeSurvey": "Retake Survey",
+      "updateGoals": "Update Goals",
+      "viewResources": "View Resources",
+      "trackProgress": "Track Progress"
+    },
+    "recentActivity": {
+      "title": "Recent Activity",
+      "noActivity": "No recent activity"
+    },
+    "messages": {
+      "noPlan": "No career plan found. Complete the survey to get started!",
+      "planGenerated": "Your new career plan has been generated!",
+      "fetchError": "Unable to load dashboard data. Please refresh.",
+      "updateSuccess": "Dashboard updated successfully"
+    }
+  },
+  "header": {
+    "navigation": {
+      "appName": "Career Mentor",
+      "home": "Home",
+      "survey": "Survey",
+      "dashboard": "Dashboard",
+      "resources": "Resources",
+      "about": "About",
+      "login": "Login",
+      "register": "Register"
+    },
+    "userMenu": {
+      "profile": "Profile",
+      "settings": "Settings",
+      "help": "Help",
+      "logout": "Sign Out"
+    },
+    "language": {
+      "english": "English",
+      "hebrew": "עברית"
+    },
+    "logoutConfirm": {
+      "title": "Sign Out",
+      "text": "Are you sure you want to sign out? You'll need to sign in again to access your career plan.",
+      "confirm": "Yes, Sign Out",
+      "cancel": "Cancel"
+    },
+    "notifications": {
+      "title": "Notifications",
+      "noNotifications": "No new notifications"
+    }
+  },
+  "planDisplay": {
+    "title": "Your Personalized Career Plan",
+    "generatedOn": "Generated on {{date}}",
+    "estimatedDuration": "Estimated Duration: {{duration}}",
+    "sections": {
+      "summary": "Executive Summary",
+      "milestones": "Key Milestones",
+      "resources": "Learning Resources",
+      "timeline": "Timeline",
+      "nextSteps": "Immediate Next Steps"
+    },
+    "actions": {
+      "print": "Print Plan",
+      "download": "Download PDF",
+      "email": "Email to Me",
+      "regenerate": "Generate New Plan"
+    }
+  },
+  "footer": {
+    "title": "AI Career Mentor",
+    "description": "Transform your career journey with AI-powered guidance. Get personalized career development plans tailored to your goals and aspirations.",
+    "quickLinks": {
+      "title": "Quick Links",
+      "survey": "Take Survey",
+      "dashboard": "Dashboard",
+      "about": "About Us",
+      "contact": "Contact"
+    },
+    "support": {
+      "title": "Support",
+      "helpCenter": "Help Center",
+      "faq": "FAQ",
+      "privacyPolicy": "Privacy Policy",
+      "termsOfService": "Terms of Service"
+    },
+    "contact": {
+      "title": "Contact Info",
+      "email": "support@aicareermentor.com",
+      "phone": "+1 (555) 123-4567",
+      "address": "123 Innovation Drive\nTech Valley, CA 94000"
+    },
+    "copyright": "AI Career Mentor"
+  },
+  "errors": {
+    "generic": "Something went wrong. Please try again.",
+    "network": "Network error. Check your connection.",
+    "unauthorized": "Please log in to continue.",
+    "forbidden": "You don't have permission to access this.",
+    "notFound": "The requested resource was not found.",
+    "validation": "Please check your input and try again.",
+    "server": "Server error. Please try again later."
+  },
+  "loading": {
+    "default": "Loading...",
+    "authenticating": "Authenticating...",
+    "generating": "Generating your plan...",
+    "saving": "Saving...",
+    "processing": "Processing..."
+  }
+}
