@@ -1,54 +1,92 @@
-# React + TypeScript + Vite
+# AI Career Mentor 🎯
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+> AI-powered career development assistant with full Hebrew (RTL) and English support
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- 🤖 **AI Career Plans** - Personalized career development strategies
+- 🌍 **Bilingual** - English/Hebrew with automatic RTL layout switching
+- 📊 **Progress Tracking** - Monitor your career journey
+- 📱 **Responsive** - Works on all devices
+- 🔐 **Secure** - User authentication and data protection
 
-## Expanding the ESLint configuration
+## Tech Stack
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **React 18** + TypeScript + Vite
+- **Styled Components** with RTL theme system
+- **React i18next** for internationalization
+- **Material-UI** icons
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+## Quick Start
+
+```bash
+# Clone and install
+git clone <repo-url>
+cd ai-career-mentor
+npm install
+
+# Set up environment
+cp .env.example .env
+
+# Start development server
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Open [http://localhost:5173](http://localhost:5173)
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## RTL Support
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+Comprehensive right-to-left support for Hebrew:
+
+```typescript
+// Auto RTL styling
+const { getMargin, getTextAlign } = useRTLAware();
+const styles = {
+  ...getMargin("10px", "20px"), // Auto margins
+  textAlign: getTextAlign("left"), // 'right' in Hebrew
+};
+
+// Theme-based components
+const Card = styled.div`
+  direction: ${({ theme }) => theme.direction};
+  text-align: ${({ theme }) => (theme.direction === "rtl" ? "right" : "left")};
+`;
 ```
+
+## Scripts
+
+- `npm run dev` - Development server
+- `npm run build` - Production build
+- `npm run preview` - Preview build
+- `npm run lint` - Code linting
+
+## Project Structure
+
+```
+src/
+├── contexts/RTLContext.tsx    # RTL provider & theme
+├── hooks/useRTLAware.ts       # RTL styling utilities
+├── pages/                     # Main app pages
+├── locales/                   # en.json, he.json
+└── types/styled.d.ts          # Theme types
+```
+
+## Environment Variables
+
+```env
+VITE_API_BASE_URL=http://localhost:3000/api
+```
+
+## Contributing
+
+1. Fork the repo
+2. Create feature branch: `git checkout -b feature/new-feature`
+3. Commit changes: `git commit -m 'Add feature'`
+4. Push: `git push origin feature/new-feature`
+5. Open Pull Request
+
+**RTL Guidelines:** Test both English (LTR) and Hebrew (RTL) layouts, use provided RTL hooks for new components.
+
+---
+
+Built with React + TypeScript + Vite
