@@ -107,9 +107,12 @@ const Survey = () => {
           value={experience}
           onChange={(e) => setExperience(e.target.value)}
         >
-          <option value="junior">{t("experience.options.student")}</option>
-          <option value="mid">{t("experience.options.junior")}</option>
+          <option value="student">{t("experience.options.student")}</option>
+          <option value="junior">{t("experience.options.junior")}</option>
+          <option value="mid">{t("experience.options.mid")}</option>
           <option value="senior">{t("experience.options.senior")}</option>
+          <option value="lead">{t("experience.options.lead")}</option>
+          <option value="executive">{t("experience.options.executive")}</option>
         </Select>
 
         <Label>{t("interests.label")}</Label>
