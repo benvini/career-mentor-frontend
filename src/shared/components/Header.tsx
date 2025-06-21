@@ -21,6 +21,7 @@ const HeaderContent = styled.div`
   justify-content: space-between;
   align-items: center;
   height: 70px;
+  direction: ${({ theme }) => theme.direction};
 
   @media (max-width: 768px) {
     padding: 0 16px;
@@ -34,6 +35,8 @@ const Logo = styled.div`
   gap: 12px;
   cursor: pointer;
   transition: transform 0.2s ease;
+  flex-direction: ${(props) =>
+    props.theme.direction === "rtl" ? "row-reverse" : "row"};
 
   &:hover {
     transform: scale(1.02);
@@ -77,6 +80,8 @@ const LogoText = styled.h1`
 const Navigation = styled.nav`
   display: flex;
   gap: 32px;
+  flex-direction: ${({ theme }) =>
+    theme.direction === "rtl" ? "row-reverse" : "row"};
 
   @media (max-width: 768px) {
     display: none;
@@ -123,6 +128,8 @@ const UserSection = styled.div`
   display: flex;
   align-items: center;
   gap: 16px;
+  flex-direction: ${(props) =>
+    props.theme.direction === "rtl" ? "row-reverse" : "row"};
 `;
 
 const LanguageToggle = styled.button<{ $isActive?: boolean }>`
@@ -141,6 +148,7 @@ const LanguageToggle = styled.button<{ $isActive?: boolean }>`
   display: flex;
   align-items: center;
   gap: 4px;
+  direction: ltr; /* Always keep language toggle LTR */
 
   &:hover {
     background: ${(props) =>
@@ -190,16 +198,16 @@ const PersonIconStyled = styled(PersonIcon)`
 const UserDropdown = styled.div<{ $isOpen: boolean }>`
   position: absolute;
   top: calc(100% + 8px);
-  right: 0;
+  ${({ theme }) => (theme.direction === "rtl" ? "left: 0;" : "right: 0;")}
   background: white;
   border-radius: 12px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
   padding: 8px 0;
   min-width: 180px;
-  opacity: ${(props) => (props.$isOpen ? 1 : 0)};
-  visibility: ${(props) => (props.$isOpen ? "visible" : "hidden")};
-  transform: ${(props) =>
-    props.$isOpen ? "translateY(0)" : "translateY(-10px)"};
+  opacity: ${({ $isOpen }) => ($isOpen ? 1 : 0)};
+  visibility: ${({ $isOpen }) => ($isOpen ? "visible" : "hidden")};
+  transform: ${({ $isOpen }) =>
+    $isOpen ? "translateY(0)" : "translateY(-10px)"};
   transition: all 0.3s ease;
   z-index: 1001;
 `;
@@ -209,11 +217,13 @@ const DropdownItem = styled.button`
   padding: 12px 20px;
   background: none;
   border: none;
-  text-align: left;
+  text-align: ${(props) =>
+    props.theme.direction === "rtl" ? "right" : "left"};
   color: #333;
   font-size: 14px;
   cursor: pointer;
   transition: background-color 0.2s ease;
+  direction: ${(props) => props.theme.direction};
 
   &:hover {
     background: #f8f9fa;
@@ -251,6 +261,7 @@ const MobileMenu = styled.div<{ $isOpen: boolean }>`
   transform: ${(props) =>
     props.$isOpen ? "translateY(0)" : "translateY(-10px)"};
   transition: all 0.3s ease;
+  direction: ${(props) => props.theme.direction};
 
   @media (max-width: 768px) {
     display: block;
@@ -278,6 +289,7 @@ const ConfirmationModal = styled.div`
   width: 90%;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   text-align: center;
+  direction: ${(props) => props.theme.direction};
 `;
 
 const ConfirmationTitle = styled.h3`
@@ -296,6 +308,8 @@ const ConfirmationButtons = styled.div`
   display: flex;
   gap: 12px;
   justify-content: center;
+  flex-direction: ${(props) =>
+    props.theme.direction === "rtl" ? "row-reverse" : "row"};
 `;
 
 const ConfirmButton = styled.button`
@@ -340,7 +354,8 @@ const MobileNavLink = styled.button<{ $isActive?: boolean }>`
   font-size: 16px;
   font-weight: ${(props) => (props.$isActive ? "600" : "500")};
   padding: 12px 0;
-  text-align: left;
+  text-align: ${(props) =>
+    props.theme.direction === "rtl" ? "right" : "left"};
   cursor: pointer;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 
@@ -525,7 +540,7 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
               {t("navigation.dashboard")}
             </MobileNavLink>
             <MobileNavLink onClick={handleLogoutRequest}>
-              {t("common.logout")}
+              {t("userMenu.logout")}
             </MobileNavLink>
           </>
         ) : (
@@ -543,16 +558,14 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
       {/* Logout Confirmation Modal */}
       <LogoutConfirmation $isOpen={showLogoutConfirm}>
         <ConfirmationModal>
-          <ConfirmationTitle>
-            {t("header.logoutConfirm.title")}
-          </ConfirmationTitle>
-          <ConfirmationText>{t("header.logoutConfirm.text")}</ConfirmationText>
+          <ConfirmationTitle>{t("logoutConfirm.title")}</ConfirmationTitle>
+          <ConfirmationText>{t("logoutConfirm.text")}</ConfirmationText>
           <ConfirmationButtons>
             <ConfirmButton onClick={handleLogout}>
-              {t("header.logoutConfirm.confirm")}
+              {t("logoutConfirm.confirm")}
             </ConfirmButton>
             <CancelButton onClick={handleCancelLogout}>
-              {t("header.logoutConfirm.cancel")}
+              {t("logoutConfirm.cancel")}
             </CancelButton>
           </ConfirmationButtons>
         </ConfirmationModal>

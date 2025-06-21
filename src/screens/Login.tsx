@@ -97,29 +97,27 @@ const Label = styled.label`
 
 const Input = styled.input<{ hasError?: boolean }>`
   padding: 16px 20px;
-  border: 2px solid ${(props) => (props.hasError ? "#dc3545" : "#e9ecef")};
+  border: 2px solid ${({ hasError }) => (hasError ? "#dc3545" : "#e9ecef")};
   border-radius: 12px;
   font-size: 1rem;
   transition: all 0.3s ease;
   background: #f8f9fa;
+  text-align: ${({ theme }) => (theme.direction === "rtl" ? "right" : "left")};
+  direction: ${({ theme }) => theme.direction};
 
   &:focus {
     outline: none;
-    border-color: ${(props) => (props.hasError ? "#dc3545" : "#667eea")};
+    border-color: ${({ hasError }) => (hasError ? "#dc3545" : "#667eea")};
     background: white;
     box-shadow: 0 0 0 3px
-      ${(props) =>
-        props.hasError ? "rgba(220, 53, 69, 0.1)" : "rgba(102, 126, 234, 0.1)"};
-  }
-
-  &:disabled {
-    background-color: #f8f9fa;
-    cursor: not-allowed;
-    opacity: 0.7;
+      ${({ hasError }) =>
+        hasError ? "rgba(220, 53, 69, 0.1)" : "rgba(102, 126, 234, 0.1)"};
   }
 
   &::placeholder {
     color: #adb5bd;
+    text-align: ${({ theme }) =>
+      theme.direction === "rtl" ? "right" : "left"};
   }
 `;
 

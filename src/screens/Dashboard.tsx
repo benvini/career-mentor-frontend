@@ -28,6 +28,7 @@ const Container = styled.div`
   min-height: calc(100vh - 70px);
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   padding: 40px 16px;
+  direction: ${({ theme }) => theme.direction};
 `;
 
 const DashboardHeader = styled.div`
@@ -62,8 +63,10 @@ const MainContent = styled.div`
   max-width: 1200px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: 1fr 300px;
+  grid-template-columns: ${({ theme }) =>
+    theme.direction === "rtl" ? "300px 1fr" : "1fr 300px"};
   gap: 32px;
+  direction: ${({ theme }) => theme.direction};
 
   @media (max-width: 1024px) {
     grid-template-columns: 1fr;
@@ -126,52 +129,60 @@ const SideCard = styled(Card)`
   }
 `;
 
-const CardTitle = styled.h2`
-  font-size: 1.75rem;
-  font-weight: 600;
-  color: #343a40;
-  margin-bottom: 16px;
+const CardTitleWrapper = styled.div`
   display: flex;
   align-items: center;
   gap: 12px;
-
-  &::before {
-    content: "${(props) =>
-      props.children?.toString().includes("Plan")
-        ? "🎯"
-        : props.children?.toString().includes("Progress")
-        ? "📊"
-        : props.children?.toString().includes("Resources")
-        ? "📚"
-        : props.children?.toString().includes("Actions")
-        ? "⚡"
-        : props.children?.toString().includes("Activity")
-        ? "📋"
-        : "🔧"}";
-    font-size: 1.5rem;
-  }
+  flex-direction: ${({ theme }) =>
+    theme.direction === "rtl" ? "row-reverse" : "row"};
+  margin-bottom: 16px;
+  width: 100%;
 `;
 
-const SideCardTitle = styled.h3`
-  font-size: 1.25rem;
+const CardTitleText = styled.h2`
+  font-size: 1.75rem;
   font-weight: 600;
   color: #343a40;
-  margin-bottom: 16px;
+  margin: 0;
+  flex: 1;
+  text-align: ${({ theme }) => (theme.direction === "rtl" ? "right" : "left")};
+  direction: ${({ theme }) => theme.direction};
+`;
+
+const CardTitleIcon = styled.span`
+  font-size: 1.5rem;
+  flex-shrink: 0;
+`;
+
+const SideCardTitleWrapper = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
+  flex-direction: ${({ theme }) =>
+    theme.direction === "rtl" ? "row-reverse" : "row"};
+  margin-bottom: 16px;
+  width: 100%;
+`;
 
-  &::before {
-    content: "${(props) =>
-      props.children?.toString().includes("Actions")
-        ? "⚡"
-        : props.children?.toString().includes("Stats")
-        ? "📈"
-        : props.children?.toString().includes("Activity")
-        ? "📋"
-        : "🔧"}";
-    font-size: 1rem;
-  }
+const SideCardTitleText = styled.h3`
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #343a40;
+  margin: 0;
+  flex: 1;
+  text-align: ${({ theme }) => (theme.direction === "rtl" ? "right" : "left")};
+  direction: ${({ theme }) => theme.direction};
+`;
+
+const SideCardTitleIcon = styled.span`
+  font-size: 1rem;
+  flex-shrink: 0;
+`;
+
+const RTLTextWrapper = styled.div`
+  flex: 1;
+  text-align: ${({ theme }) => (theme.direction === "rtl" ? "right" : "left")};
+  direction: ${({ theme }) => theme.direction};
 `;
 
 const PlanContainer = styled.div`
@@ -184,6 +195,7 @@ const PlanContainer = styled.div`
   padding: 24px;
   border: 2px solid #e9ecef;
   position: relative;
+  direction: ${({ theme }) => theme.direction};
 `;
 
 const PlanHeader = styled.div`
@@ -211,6 +223,8 @@ const PlanActions = styled.div`
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
+  flex-direction: ${({ theme }) =>
+    theme.direction === "rtl" ? "row-reverse" : "row"};
 `;
 
 const ActionButton = styled.button<{ variant?: "primary" | "secondary" }>`
@@ -250,6 +264,8 @@ const PlanContent = styled.pre`
   overflow-y: auto;
   margin: 0;
   font-family: inherit;
+  text-align: ${({ theme }) => (theme.direction === "rtl" ? "right" : "left")};
+  direction: ${({ theme }) => theme.direction};
 `;
 
 const StatsGrid = styled.div`
@@ -296,6 +312,8 @@ const StatLabel = styled.div`
   font-size: 0.9rem;
   color: #6c757d;
   font-weight: 500;
+  text-align: center;
+  direction: ${({ theme }) => theme.direction};
 `;
 
 const QuickActionsList = styled.div`
@@ -309,7 +327,6 @@ const QuickActionItem = styled.button`
   border: 2px solid #e9ecef;
   padding: 16px;
   border-radius: 12px;
-  text-align: left;
   cursor: pointer;
   transition: all 0.3s ease;
   font-weight: 500;
@@ -317,26 +334,25 @@ const QuickActionItem = styled.button`
   display: flex;
   align-items: center;
   gap: 12px;
+  flex-direction: ${({ theme }) =>
+    theme.direction === "rtl" ? "row-reverse" : "row"};
+  justify-content: ${({ theme }) =>
+    theme.direction === "rtl" ? "flex-end" : "flex-start"};
+  text-align: ${({ theme }) => (theme.direction === "rtl" ? "right" : "left")};
+  direction: ${({ theme }) => theme.direction};
+  width: 100%;
 
   &:hover {
     border-color: #667eea;
     background: rgba(102, 126, 234, 0.05);
-    transform: translateX(4px);
+    transform: ${({ theme }) =>
+      theme.direction === "rtl" ? "translateX(-4px)" : "translateX(4px)"};
   }
+`;
 
-  &::before {
-    content: "${(props) =>
-      props.children?.toString().includes("Survey")
-        ? "📝"
-        : props.children?.toString().includes("Goals")
-        ? "🎯"
-        : props.children?.toString().includes("Resources")
-        ? "📚"
-        : props.children?.toString().includes("Progress")
-        ? "📊"
-        : "▶️"}";
-    font-size: 1.2rem;
-  }
+const QuickActionIcon = styled.span`
+  font-size: 1.2rem;
+  flex-shrink: 0;
 `;
 
 const ActivityList = styled.div`
@@ -349,15 +365,22 @@ const ActivityItem = styled.div`
   padding: 12px 16px;
   background: #f8f9fa;
   border-radius: 8px;
-  border-left: 4px solid #667eea;
   font-size: 0.9rem;
   color: #495057;
+  text-align: ${({ theme }) => (theme.direction === "rtl" ? "right" : "left")};
+  direction: ${({ theme }) => theme.direction};
+
+  ${({ theme }) =>
+    theme.direction === "rtl"
+      ? "border-right: 4px solid #667eea;"
+      : "border-left: 4px solid #667eea;"}
 `;
 
 const EmptyState = styled.div`
   text-align: center;
   padding: 48px 24px;
   color: #6c757d;
+  direction: ${({ theme }) => theme.direction};
 `;
 
 const EmptyIcon = styled.div`
@@ -370,11 +393,15 @@ const EmptyTitle = styled.h3`
   font-size: 1.5rem;
   margin-bottom: 8px;
   color: #495057;
+  text-align: center;
+  direction: ${({ theme }) => theme.direction};
 `;
 
 const EmptyText = styled.p`
   margin-bottom: 24px;
   line-height: 1.6;
+  text-align: center;
+  direction: ${({ theme }) => theme.direction};
 `;
 
 const CTAButton = styled.button`
@@ -403,6 +430,9 @@ const ErrorMessage = styled.div`
   display: flex;
   align-items: center;
   gap: 12px;
+  text-align: ${({ theme }) => (theme.direction === "rtl" ? "right" : "left")};
+  flex-direction: ${({ theme }) =>
+    theme.direction === "rtl" ? "row-reverse" : "row"};
 
   &::before {
     content: "⚠️";
@@ -455,6 +485,64 @@ const Dashboard = () => {
   const [error, setError] = useState("");
   const [userEmail, setUserEmail] = useState("");
   const navigate = useNavigate();
+
+  // Helper functions for icons
+  const getCardIcon = (title: string) => {
+    if (title.includes("Plan") || title.includes("תוכנית")) return "🎯";
+    if (title.includes("Progress") || title.includes("התקדמות")) return "📊";
+    if (title.includes("Resources") || title.includes("משאבים")) return "📚";
+    if (title.includes("Actions") || title.includes("פעולות")) return "⚡";
+    if (title.includes("Activity") || title.includes("פעילות")) return "📋";
+    if (
+      title.includes("Stats") ||
+      title.includes("סטטיסטיקה") ||
+      title.includes("overview") ||
+      title.includes("סקירה")
+    )
+      return "📈";
+    return "🔧";
+  };
+
+  const getQuickActionIcon = (text: string) => {
+    if (text.includes("Survey") || text.includes("שאלון")) return "📝";
+    if (text.includes("Goals") || text.includes("מטרות")) return "🎯";
+    if (text.includes("Resources") || text.includes("משאבים")) return "📚";
+    if (text.includes("Progress") || text.includes("התקדמות")) return "📊";
+    return "▶️";
+  };
+
+  // Render functions for titles with icons
+  const renderCardTitle = (titleKey: string) => {
+    const title = t(titleKey);
+    return (
+      <CardTitleWrapper>
+        <CardTitleText>{title}</CardTitleText>
+        <CardTitleIcon>{getCardIcon(title)}</CardTitleIcon>
+      </CardTitleWrapper>
+    );
+  };
+
+  const renderSideCardTitle = (titleKey: string) => {
+    const title = t(titleKey);
+    return (
+      <SideCardTitleWrapper>
+        <SideCardTitleText>{title}</SideCardTitleText>
+        <SideCardTitleIcon>{getCardIcon(title)}</SideCardTitleIcon>
+      </SideCardTitleWrapper>
+    );
+  };
+
+  const renderQuickActionItem = (textKey: string, onClick?: () => void) => {
+    const text = t(textKey);
+    return (
+      <QuickActionItem onClick={onClick}>
+        <QuickActionIcon>{getQuickActionIcon(text)}</QuickActionIcon>
+        <RTLTextWrapper>{text}</RTLTextWrapper>
+      </QuickActionItem>
+    );
+  };
+
+  // ... כל שאר הפונקציות נשארות זהות
 
   const fetchSurveys = useCallback(async () => {
     try {
@@ -528,7 +616,7 @@ const Dashboard = () => {
         <PrimarySection>
           {latestSurvey?.aiPlan ? (
             <Card>
-              <CardTitle>{t("sections.currentPlan")}</CardTitle>
+              {renderCardTitle("sections.currentPlan")}
               <PlanContainer>
                 <PlanHeader>
                   <PlanTitle>{t("currentPlan.title")}</PlanTitle>
@@ -575,7 +663,7 @@ const Dashboard = () => {
 
         <SidebarSection>
           <SideCard>
-            <SideCardTitle>{t("sections.overview")}</SideCardTitle>
+            {renderSideCardTitle("sections.overview")}
             <StatsGrid>
               <StatItem>
                 <StatNumber>{surveys.length}</StatNumber>
@@ -589,25 +677,22 @@ const Dashboard = () => {
           </SideCard>
 
           <SideCard>
-            <SideCardTitle>{t("quickActions.title")}</SideCardTitle>
+            {renderSideCardTitle("quickActions.title")}
             <QuickActionsList>
-              <QuickActionItem onClick={handleRetakeSurvey}>
-                {t("quickActions.retakeSurvey")}
-              </QuickActionItem>
-              <QuickActionItem onClick={() => navigate("/survey")}>
-                {t("quickActions.updateGoals")}
-              </QuickActionItem>
-              <QuickActionItem>
-                {t("quickActions.viewResources")}
-              </QuickActionItem>
-              <QuickActionItem>
-                {t("quickActions.trackProgress")}
-              </QuickActionItem>
+              {renderQuickActionItem(
+                "quickActions.retakeSurvey",
+                handleRetakeSurvey
+              )}
+              {renderQuickActionItem("quickActions.updateGoals", () =>
+                navigate("/survey")
+              )}
+              {renderQuickActionItem("quickActions.viewResources")}
+              {renderQuickActionItem("quickActions.trackProgress")}
             </QuickActionsList>
           </SideCard>
 
           <SideCard>
-            <SideCardTitle>{t("recentActivity.title")}</SideCardTitle>
+            {renderSideCardTitle("recentActivity.title")}
             <ActivityList>
               {surveys.length > 0 ? (
                 surveys
