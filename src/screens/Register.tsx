@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled, { keyframes } from "styled-components";
 import { useTranslation } from "react-i18next";
-import api from "../api/client";
+import { AuthService } from "../api/authService";
 
 const slideInUp = keyframes`
   from {
@@ -95,9 +95,9 @@ const Label = styled.label`
   font-size: 0.95rem;
 `;
 
-const Input = styled.input<{ hasError?: boolean }>`
+const Input = styled.input<{ $hasError?: boolean }>`
   padding: 16px 20px;
-  border: 2px solid ${({ hasError }) => (hasError ? "#dc3545" : "#e9ecef")};
+  border: 2px solid ${({ $hasError }) => ($hasError ? "#dc3545" : "#e9ecef")};
   border-radius: 12px;
   font-size: 1rem;
   transition: all 0.3s ease;
@@ -107,11 +107,11 @@ const Input = styled.input<{ hasError?: boolean }>`
 
   &:focus {
     outline: none;
-    border-color: ${({ hasError }) => (hasError ? "#dc3545" : "#667eea")};
+    border-color: ${({ $hasError }) => ($hasError ? "#dc3545" : "#667eea")};
     background: white;
     box-shadow: 0 0 0 3px
-      ${({ hasError }) =>
-        hasError ? "rgba(220, 53, 69, 0.1)" : "rgba(102, 126, 234, 0.1)"};
+      ${({ $hasError }) =>
+        $hasError ? "rgba(220, 53, 69, 0.1)" : "rgba(102, 126, 234, 0.1)"};
   }
 
   &::placeholder {
@@ -121,7 +121,7 @@ const Input = styled.input<{ hasError?: boolean }>`
   }
 `;
 
-const PasswordStrength = styled.div<{ strength: number }>`
+const PasswordStrength = styled.div<{ $strength: number }>`
   height: 6px;
   width: 100%;
   background-color: #e9ecef;
@@ -134,13 +134,13 @@ const PasswordStrength = styled.div<{ strength: number }>`
     content: "";
     display: block;
     height: 100%;
-    width: ${(props) => (props.strength / 4) * 100}%;
+    width: ${(props) => (props.$strength / 4) * 100}%;
     background: ${(props) => {
-      if (props.strength <= 1)
+      if (props.$strength <= 1)
         return "linear-gradient(90deg, #dc3545, #fd7e14)";
-      if (props.strength <= 2)
+      if (props.$strength <= 2)
         return "linear-gradient(90deg, #fd7e14, #ffc107)";
-      if (props.strength <= 3)
+      if (props.$strength <= 3)
         return "linear-gradient(90deg, #ffc107, #28a745)";
       return "linear-gradient(90deg, #28a745, #20c997)";
     }};
@@ -149,12 +149,12 @@ const PasswordStrength = styled.div<{ strength: number }>`
   }
 `;
 
-const PasswordHint = styled.div<{ strength: number }>`
+const PasswordHint = styled.div<{ $strength: number }>`
   font-size: 0.85rem;
   color: ${(props) => {
-    if (props.strength <= 1) return "#dc3545";
-    if (props.strength <= 2) return "#fd7e14";
-    if (props.strength <= 3) return "#ffc107";
+    if (props.$strength <= 1) return "#dc3545";
+    if (props.$strength <= 2) return "#fd7e14";
+    if (props.$strength <= 3) return "#ffc107";
     return "#28a745";
   }};
   margin-top: 4px;
@@ -183,22 +183,22 @@ const RequirementsList = styled.ul`
   gap: 8px;
 `;
 
-const RequirementItem = styled.li<{ met: boolean }>`
+const RequirementItem = styled.li<{ $met: boolean }>`
   font-size: 0.85rem;
-  color: ${(props) => (props.met ? "#28a745" : "#6c757d")};
+  color: ${(props) => (props.$met ? "#28a745" : "#6c757d")};
   display: flex;
   align-items: center;
   gap: 8px;
 
   &::before {
-    content: "${(props) => (props.met ? "✓" : "○")}";
+    content: "${(props) => (props.$met ? "✓" : "○")}";
     font-weight: bold;
   }
 `;
 
-const SubmitButton = styled.button<{ strength: number }>`
+const SubmitButton = styled.button<{ $strength: number }>`
   background: ${(props) =>
-    props.strength >= 2
+    props.$strength >= 2
       ? "linear-gradient(135deg, #28a745 0%, #20c997 100%)"
       : "#6c757d"};
   color: white;
@@ -207,7 +207,7 @@ const SubmitButton = styled.button<{ strength: number }>`
   font-size: 1.125rem;
   font-weight: 600;
   border-radius: 12px;
-  cursor: ${(props) => (props.strength >= 2 ? "pointer" : "not-allowed")};
+  cursor: ${(props) => (props.$strength >= 2 ? "pointer" : "not-allowed")};
   transition: all 0.3s ease;
   margin-top: 16px;
   position: relative;
@@ -231,12 +231,12 @@ const SubmitButton = styled.button<{ strength: number }>`
 
   &:hover:not(:disabled) {
     transform: ${(props) =>
-      props.strength >= 2 ? "translateY(-2px)" : "none"};
+      props.$strength >= 2 ? "translateY(-2px)" : "none"};
     box-shadow: ${(props) =>
-      props.strength >= 2 ? "0 8px 25px rgba(40, 167, 69, 0.4)" : "none"};
+      props.$strength >= 2 ? "0 8px 25px rgba(40, 167, 69, 0.4)" : "none"};
 
     &::before {
-      left: ${(props) => (props.strength >= 2 ? "100%" : "-100%")};
+      left: ${(props) => (props.$strength >= 2 ? "100%" : "-100%")};
     }
   }
 
@@ -337,15 +337,6 @@ const LoadingSpinner = styled.div`
   }
 `;
 
-interface ApiError {
-  response?: {
-    data?: {
-      error?: string;
-    };
-  };
-  message?: string;
-}
-
 interface ValidationErrors {
   email?: string;
   password?: string;
@@ -376,13 +367,13 @@ const Register = () => {
   };
 
   const getPasswordRequirements = (pwd: string) => [
-    { text: t("passwordRequirements.length"), met: pwd.length >= 8 },
-    { text: t("passwordRequirements.uppercase"), met: /[A-Z]/.test(pwd) },
-    { text: t("passwordRequirements.lowercase"), met: /[a-z]/.test(pwd) },
-    { text: t("passwordRequirements.number"), met: /\d/.test(pwd) },
+    { text: t("passwordRequirements.length"), $met: pwd.length >= 8 },
+    { text: t("passwordRequirements.uppercase"), $met: /[A-Z]/.test(pwd) },
+    { text: t("passwordRequirements.lowercase"), $met: /[a-z]/.test(pwd) },
+    { text: t("passwordRequirements.number"), $met: /\d/.test(pwd) },
     {
       text: t("passwordRequirements.special"),
-      met: /[!@#$%^&*(),.?":{}|<>]/.test(pwd),
+      $met: /[!@#$%^&*(),.?":{}|<>]/.test(pwd),
     },
   ];
 
@@ -461,16 +452,16 @@ const Register = () => {
     setIsLoading(true);
 
     try {
-      await api.post("/users/register", { email, password });
-      setSuccess(t("messages.success"));
-      setTimeout(() => navigate("/login"), 2000);
-    } catch (err) {
-      const apiError = err as ApiError;
-      setError(
-        apiError.response?.data?.error ||
-          apiError.message ||
-          t("errors.registrationFailed")
-      );
+      const result = await AuthService.register({ email, password });
+
+      if (result.success) {
+        setSuccess(result.message || t("messages.success"));
+        setTimeout(() => navigate("/login"), 2000);
+      } else {
+        setError(result.error || t("errors.registrationFailed"));
+      }
+    } catch {
+      setError(t("errors.registrationFailed"));
     } finally {
       setIsLoading(false);
     }
@@ -494,7 +485,7 @@ const Register = () => {
               value={email}
               onChange={(e) => handleEmailChange(e.target.value)}
               disabled={isLoading}
-              hasError={!!validationErrors.email}
+              $hasError={!!validationErrors.email}
               autoComplete="email"
             />
             {validationErrors.email && (
@@ -511,13 +502,13 @@ const Register = () => {
               value={password}
               onChange={(e) => handlePasswordChange(e.target.value)}
               disabled={isLoading}
-              hasError={!!validationErrors.password}
+              $hasError={!!validationErrors.password}
               autoComplete="new-password"
             />
             {password && (
               <>
-                <PasswordStrength strength={passwordStrength} />
-                <PasswordHint strength={passwordStrength}>
+                <PasswordStrength $strength={passwordStrength} />
+                <PasswordHint $strength={passwordStrength}>
                   {t("passwordStrength.label")}: {getPasswordStrengthText()}
                 </PasswordHint>
                 <PasswordRequirements>
@@ -526,7 +517,7 @@ const Register = () => {
                   </RequirementTitle>
                   <RequirementsList>
                     {getPasswordRequirements(password).map((req, index) => (
-                      <RequirementItem key={index} met={req.met}>
+                      <RequirementItem key={index} $met={req.$met}>
                         {req.text}
                       </RequirementItem>
                     ))}
@@ -548,7 +539,7 @@ const Register = () => {
               value={confirmPassword}
               onChange={(e) => handleConfirmPasswordChange(e.target.value)}
               disabled={isLoading}
-              hasError={!!validationErrors.confirmPassword}
+              $hasError={!!validationErrors.confirmPassword}
               autoComplete="new-password"
             />
             {validationErrors.confirmPassword && (
@@ -559,7 +550,7 @@ const Register = () => {
           <SubmitButton
             type="submit"
             disabled={isLoading || passwordStrength < 2}
-            strength={passwordStrength}
+            $strength={passwordStrength}
           >
             {isLoading && <LoadingSpinner />}
             {isLoading ? t("registering") : t("register")}

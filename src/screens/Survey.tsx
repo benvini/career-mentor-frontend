@@ -1,7 +1,13 @@
 import { useState } from "react";
 import styled from "styled-components";
-import api from "../api/client";
+import { api } from "../api/api";
 import { useTranslation } from "react-i18next";
+import i18n from "i18next";
+
+interface ApiErrorResponse {
+  error?: string;
+  message?: string;
+}
 
 const Container = styled.div`
   max-width: 600px;
@@ -55,6 +61,15 @@ const Button = styled.button`
   cursor: pointer;
 `;
 
+const ErrorMessage = styled.div`
+  background: #f8d7da;
+  color: #721c24;
+  padding: 12px 16px;
+  border-radius: 6px;
+  margin-top: 16px;
+  border: 1px solid #f5c6cb;
+`;
+
 const ResponseBox = styled.pre`
   background: #f9f9f9;
   padding: 16px;
@@ -71,6 +86,7 @@ const Survey = () => {
   const [goal, setGoal] = useState("");
   const [aiPlan, setAiPlan] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleCheckboxChange = (interest: string) => {
     setInterests((prev) =>
@@ -84,15 +100,29 @@ const Survey = () => {
     e.preventDefault();
     setLoading(true);
     setAiPlan("");
+    setError("");
 
     try {
-      const res = await api.post("/surveys", {
-        answers: { experience, interests, goal },
-      });
-      setAiPlan(res.data.aiPlan || "לא התקבלה תשובה מה-AI");
-      setAiPlan(res.data.aiPlan || t("noAiResponse"));
-    } catch {
-      setAiPlan(t("surveySubmitError"));
+      const surveyData = {
+        experience,
+        interests,
+        goal,
+        language: i18n.language as "en" | "he",
+      };
+
+      const response = await api.surveys.create(surveyData);
+      setAiPlan(response.data.aiPlan || t("noAiResponse"));
+    } catch (err: unknown) {
+      console.error("Survey submission error:", err);
+
+      const axiosError = err as import("axios").AxiosError<ApiErrorResponse>;
+      const errorData = axiosError.response?.data;
+      const errorMessage =
+        errorData?.error ||
+        errorData?.message ||
+        axiosError.message ||
+        t("surveySubmitError");
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -154,9 +184,13 @@ const Survey = () => {
         />
 
         <Button type="submit" disabled={loading}>
-          {loading ? t("progress") : t("surveyButton")}
+          {loading
+            ? t("submitting") || "Creating Plan..."
+            : t("submit") || "Create Career Plan"}
         </Button>
       </form>
+
+      {error && <ErrorMessage>{error}</ErrorMessage>}
 
       {aiPlan && (
         <ResponseBox>

@@ -123,11 +123,12 @@
     }
   },
   "surveyScreen": {
-    "title": "Career Discovery Survey",
-    "subtitle": "Help us understand your career aspirations",
-    "description": "This comprehensive survey will help our AI create a personalized career development plan for you.",
-    "progress": "Step {{current}} of {{total}}",
-    "surveyButton": "Take Survey",
+    "title": "Career Assessment",
+    "submit": "Generate Career Plan",
+    "description": "This survey will help our AI create a personalized career development plan for you.",
+    "progress": "Generating...",
+    "surveyButton": "Create Career Plan",
+    "submitting": "Creating your personalized plan...",
     "aiPlanResponseLabel": "AI Generated Career Plan",
     "sections": {
       "personal": "Personal Information",
@@ -136,7 +137,7 @@
       "goals": "Career Goals"
     },
     "experience": {
-      "label": "What's your current experience level?",
+      "label": "Experience Level",
       "description": "Select the level that best describes your professional experience",
       "options": {
         "student": "Student / Recent Graduate",
@@ -206,8 +207,6 @@
         "unlimited": "No budget constraints"
       }
     },
-    "submit": "Generate My Career Plan",
-    "submitting": "Creating your personalized plan...",
     "aiPlan": "Your AI Career Plan",
     "navigation": {
       "previous": "Previous",

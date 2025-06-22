@@ -1,7 +1,9 @@
+import { AuthProvider } from "./contexts/AuthProvider";
 import Router from "./routes/Router";
 import { initReactI18next } from "react-i18next";
 import i18n from "i18next";
 import { RTLProvider } from "./contexts/RTLContext";
+import { authStorage } from "./api/authStorage";
 import { createGlobalStyle } from "styled-components";
 
 import en from "./locales/en.json";
@@ -78,7 +80,7 @@ i18n.use(initReactI18next).init({
     en,
     he,
   },
-  lng: localStorage.getItem("preferredLanguage") || "en",
+  lng: authStorage.getPreferredLanguage(),
   interpolation: {
     escapeValue: false,
   },
@@ -90,21 +92,23 @@ i18n.use(initReactI18next).init({
 
 // Ensure language is loaded from localStorage
 i18n.on("languageChanged", (lng) => {
-  localStorage.setItem("preferredLanguage", lng);
+  authStorage.setPreferredLanguage(lng);
 });
 
 // Check if we need to change language on mount
-const savedLang = localStorage.getItem("preferredLanguage");
-if (savedLang && savedLang !== i18n.language) {
+const savedLang = authStorage.getPreferredLanguage();
+if (savedLang !== "en" && savedLang !== i18n.language) {
   i18n.changeLanguage(savedLang);
 }
 
 const App = () => {
   return (
-    <RTLProvider>
-      <GlobalStyle />
-      <Router />
-    </RTLProvider>
+    <AuthProvider>
+      <RTLProvider>
+        <GlobalStyle />
+        <Router />
+      </RTLProvider>
+    </AuthProvider>
   );
 };
 

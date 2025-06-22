@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled, { keyframes } from "styled-components";
 import { useTranslation } from "react-i18next";
-import api from "../api/client";
+import { useAuth } from "../hooks/useAuth";
 
 const slideInUp = keyframes`
   from {
@@ -95,9 +95,9 @@ const Label = styled.label`
   font-size: 0.95rem;
 `;
 
-const Input = styled.input<{ hasError?: boolean }>`
+const Input = styled.input<{ $hasError?: boolean }>`
   padding: 16px 20px;
-  border: 2px solid ${({ hasError }) => (hasError ? "#dc3545" : "#e9ecef")};
+  border: 2px solid ${({ $hasError }) => ($hasError ? "#dc3545" : "#e9ecef")};
   border-radius: 12px;
   font-size: 1rem;
   transition: all 0.3s ease;
@@ -107,11 +107,11 @@ const Input = styled.input<{ hasError?: boolean }>`
 
   &:focus {
     outline: none;
-    border-color: ${({ hasError }) => (hasError ? "#dc3545" : "#667eea")};
+    border-color: ${({ $hasError }) => ($hasError ? "#dc3545" : "#667eea")};
     background: white;
     box-shadow: 0 0 0 3px
-      ${({ hasError }) =>
-        hasError ? "rgba(220, 53, 69, 0.1)" : "rgba(102, 126, 234, 0.1)"};
+      ${({ $hasError }) =>
+        $hasError ? "rgba(220, 53, 69, 0.1)" : "rgba(102, 126, 234, 0.1)"};
   }
 
   &::placeholder {
@@ -269,15 +269,6 @@ const LoadingSpinner = styled.div`
   }
 `;
 
-interface ApiError {
-  response?: {
-    data?: {
-      error?: string;
-    };
-  };
-  message?: string;
-}
-
 interface ValidationErrors {
   email?: string;
   password?: string;
@@ -293,6 +284,7 @@ const Login = () => {
     {}
   );
   const [isLoading, setIsLoading] = useState(false);
+  const { login } = useAuth();
   const navigate = useNavigate();
 
   const validateForm = (): boolean => {
@@ -332,6 +324,7 @@ const Login = () => {
     e.preventDefault();
     setError("");
 
+    // Validation
     if (!validateForm()) {
       return;
     }
@@ -339,25 +332,18 @@ const Login = () => {
     setIsLoading(true);
 
     try {
-      const res = await api.post("/users/login", { email, password });
+      // Use the login function from Auth Context
+      const success = await login(email, password, rememberMe);
 
-      // Store token and user info
-      localStorage.setItem("token", res.data.token);
-      localStorage.setItem("userEmail", email);
-
-      if (rememberMe) {
-        localStorage.setItem("rememberMe", "true");
+      if (success) {
+        // Navigation will happen automatically via context
+        navigate("/dashboard");
+      } else {
+        setError(t("errors.loginFailed"));
       }
-
-      // Navigate to survey or dashboard
-      navigate("/survey");
-    } catch (err) {
-      const apiError = err as ApiError;
-      setError(
-        apiError.response?.data?.error ||
-          apiError.message ||
-          t("errors.loginFailed")
-      );
+    } catch (err: unknown) {
+      console.error("Login error:", err);
+      setError(t("errors.loginFailed"));
     } finally {
       setIsLoading(false);
     }
@@ -381,7 +367,7 @@ const Login = () => {
               value={email}
               onChange={(e) => handleEmailChange(e.target.value)}
               disabled={isLoading}
-              hasError={!!validationErrors.email}
+              $hasError={!!validationErrors.email}
               autoComplete="email"
             />
             {validationErrors.email && (
@@ -398,7 +384,7 @@ const Login = () => {
               value={password}
               onChange={(e) => handlePasswordChange(e.target.value)}
               disabled={isLoading}
-              hasError={!!validationErrors.password}
+              $hasError={!!validationErrors.password}
               autoComplete="current-password"
             />
             {validationErrors.password && (

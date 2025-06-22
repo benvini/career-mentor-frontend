@@ -2,7 +2,14 @@ import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled, { keyframes } from "styled-components";
 import { useTranslation } from "react-i18next";
-import api from "../api/client";
+import { api } from "../api/api";
+import { AuthService } from "../api/authService";
+import type { Survey } from "../api/api";
+
+interface ApiErrorResponse {
+  error?: string;
+  message?: string;
+}
 
 const fadeInUp = keyframes`
   from {
@@ -227,12 +234,12 @@ const PlanActions = styled.div`
     theme.direction === "rtl" ? "row-reverse" : "row"};
 `;
 
-const ActionButton = styled.button<{ variant?: "primary" | "secondary" }>`
+const ActionButton = styled.button<{ $variant?: "primary" | "secondary" }>`
   background: ${(props) =>
-    props.variant === "primary"
+    props.$variant === "primary"
       ? "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
       : "transparent"};
-  color: ${(props) => (props.variant === "primary" ? "white" : "#667eea")};
+  color: ${(props) => (props.$variant === "primary" ? "white" : "#667eea")};
   border: 2px solid #667eea;
   padding: 8px 16px;
   font-size: 0.9rem;
@@ -243,7 +250,7 @@ const ActionButton = styled.button<{ variant?: "primary" | "secondary" }>`
 
   &:hover {
     background: ${(props) =>
-      props.variant === "primary"
+      props.$variant === "primary"
         ? "linear-gradient(135deg, #5a6fd8 0%, #6c4f8f 100%)"
         : "#667eea"};
     color: white;
@@ -463,21 +470,6 @@ const LoadingSpinner = styled.div`
   }
 `;
 
-interface Survey {
-  id: string;
-  answers: {
-    experience: string;
-    interests: string[];
-    skills?: string;
-    goal: string;
-    timeline?: string;
-    budget?: string;
-  };
-  aiPlan?: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
 const Dashboard = () => {
   const { t } = useTranslation("dashboardScreen");
   const [surveys, setSurveys] = useState<Survey[]>([]);
@@ -542,31 +534,97 @@ const Dashboard = () => {
     );
   };
 
-  // ... כל שאר הפונקציות נשארות זהות
-
   const fetchSurveys = useCallback(async () => {
     try {
       setLoading(true);
-      const res = await api.get("/surveys");
-      setSurveys(res.data || []);
-    } catch (err) {
+      setError("");
+      const response = await api.surveys.getAll();
+      setSurveys(response.data || []);
+    } catch (err: unknown) {
       console.error("Error fetching surveys:", err);
-      setError(t("messages.fetchError"));
+
+      if (AuthService.handleAuthError(err)) {
+        navigate("/login");
+        return;
+      }
+
+      const axiosError = err as import("axios").AxiosError<ApiErrorResponse>;
+      const errorData = axiosError.response?.data;
+      const errorMessage =
+        errorData?.error ||
+        errorData?.message ||
+        axiosError.message ||
+        t("messages.fetchError");
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
-  }, [t]);
+  }, [t, navigate]);
+
+  const handleRegeneratePlan = async (surveyId: string) => {
+    try {
+      setLoading(true);
+      const response = await api.surveys.regeneratePlan(surveyId);
+
+      setSurveys((prev) =>
+        prev.map((survey) =>
+          survey.id === surveyId
+            ? {
+                ...survey,
+                aiPlan: response.data.aiPlan,
+                updatedAt: new Date().toISOString(),
+              }
+            : survey
+        )
+      );
+    } catch (err: unknown) {
+      console.error("Error regenerating plan:", err);
+      if (AuthService.handleAuthError(err)) {
+        navigate("/login");
+        return;
+      }
+      const axiosError = err as import("axios").AxiosError<ApiErrorResponse>;
+      const errorData = axiosError.response?.data;
+      const errorMessage =
+        errorData?.error ||
+        errorData?.message ||
+        axiosError.message ||
+        "Failed to regenerate plan";
+      setError(errorMessage);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDownloadPlan = async (surveyId: string) => {
+    try {
+      const response = await api.surveys.export(surveyId, "pdf");
+
+      // Create download link
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `career-plan-${surveyId}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (err: unknown) {
+      console.error("Error downloading plan:", err);
+      const axiosError = err as import("axios").AxiosError;
+      setError(axiosError.message || "Failed to download plan");
+    }
+  };
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    const email = localStorage.getItem("userEmail");
-
-    if (!token) {
+    if (!AuthService.isAuthenticated()) {
       navigate("/login");
       return;
     }
 
+    const email = AuthService.getCurrentUserEmail();
     setUserEmail(email || "");
+
     fetchSurveys();
   }, [navigate, fetchSurveys]);
 
@@ -581,7 +639,8 @@ const Dashboard = () => {
     return name.charAt(0).toUpperCase() + name.slice(1);
   };
 
-  const formatDate = (dateString: string) => {
+  const formatDate = (dateString?: string) => {
+    if (!dateString) return "Unknown date";
     return new Date(dateString).toLocaleDateString(undefined, {
       year: "numeric",
       month: "long",
@@ -628,13 +687,26 @@ const Dashboard = () => {
                   </LastUpdated>
                 </PlanHeader>
                 <PlanActions>
-                  <ActionButton variant="primary" onClick={handleRetakeSurvey}>
+                  <ActionButton $variant="primary" onClick={handleRetakeSurvey}>
                     {t("currentPlan.regenerate")}
                   </ActionButton>
-                  <ActionButton variant="secondary">
+                  {latestSurvey.id && (
+                    <ActionButton
+                      $variant="secondary"
+                      onClick={() => handleRegeneratePlan(latestSurvey.id!)}
+                    >
+                      Regenerate Plan
+                    </ActionButton>
+                  )}
+                  <ActionButton
+                    $variant="secondary"
+                    onClick={() =>
+                      latestSurvey.id && handleDownloadPlan(latestSurvey.id)
+                    }
+                  >
                     {t("currentPlan.download")}
                   </ActionButton>
-                  <ActionButton variant="secondary">
+                  <ActionButton $variant="secondary">
                     {t("currentPlan.share")}
                   </ActionButton>
                 </PlanActions>
