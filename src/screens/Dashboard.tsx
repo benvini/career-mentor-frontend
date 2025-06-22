@@ -675,25 +675,6 @@ const Dashboard = () => {
     }
   };
 
-  const handleDownloadPlan = async (surveyId: string) => {
-    try {
-      const response = await api.surveys.export(surveyId, "pdf");
-
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", `career-plan-${surveyId}.pdf`);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      window.URL.revokeObjectURL(url);
-    } catch (err: unknown) {
-      console.error("Error downloading plan:", err);
-      const axiosError = err as import("axios").AxiosError;
-      setError(axiosError.message || "Failed to download plan");
-    }
-  };
-
   useEffect(() => {
     if (!AuthService.isAuthenticated()) {
       navigate("/login");
@@ -829,18 +810,6 @@ const Dashboard = () => {
                             Regenerate Plan
                           </ActionButton>
                         )}
-                        <ActionButton
-                          $variant="secondary"
-                          onClick={() =>
-                            latestSurvey.id &&
-                            handleDownloadPlan(latestSurvey.id)
-                          }
-                        >
-                          {t("currentPlan.download")}
-                        </ActionButton>
-                        <ActionButton $variant="secondary">
-                          {t("currentPlan.share")}
-                        </ActionButton>
                       </PlanActions>
                     </PlanHeader>
 
@@ -892,8 +861,6 @@ const Dashboard = () => {
                   {renderQuickActionItem("quickActions.updateGoals", () =>
                     navigate("/survey")
                   )}
-                  {renderQuickActionItem("quickActions.viewResources")}
-                  {renderQuickActionItem("quickActions.trackProgress")}
                 </QuickActionsList>
               </SidebarCard>
 
@@ -940,8 +907,6 @@ const Dashboard = () => {
                   {renderQuickActionItem("quickActions.updateGoals", () =>
                     navigate("/survey")
                   )}
-                  {renderQuickActionItem("quickActions.viewResources")}
-                  {renderQuickActionItem("quickActions.trackProgress")}
                 </QuickActionsList>
               </SidebarCard>
 
@@ -1030,18 +995,6 @@ const Dashboard = () => {
                             Regenerate Plan
                           </ActionButton>
                         )}
-                        <ActionButton
-                          $variant="secondary"
-                          onClick={() =>
-                            latestSurvey.id &&
-                            handleDownloadPlan(latestSurvey.id)
-                          }
-                        >
-                          {t("currentPlan.download")}
-                        </ActionButton>
-                        <ActionButton $variant="secondary">
-                          {t("currentPlan.share")}
-                        </ActionButton>
                       </PlanActions>
                     </PlanHeader>
 
