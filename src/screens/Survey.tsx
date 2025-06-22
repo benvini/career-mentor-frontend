@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { api } from "../api/api";
 import { useTranslation } from "react-i18next";
 import i18n from "i18next";
+import MarkdownRenderer from "../utils/markdownRenderer";
 
 interface ApiErrorResponse {
   error?: string;
@@ -10,8 +11,9 @@ interface ApiErrorResponse {
 }
 
 const Container = styled.div`
-  max-width: 600px;
+  max-width: 800px;
   margin: 60px auto;
+  padding: 0 20px;
 `;
 
 const Label = styled.label`
@@ -59,6 +61,15 @@ const Button = styled.button`
   border: none;
   border-radius: 6px;
   cursor: pointer;
+
+  &:hover {
+    background-color: #0056b3;
+  }
+
+  &:disabled {
+    background-color: #6c757d;
+    cursor: not-allowed;
+  }
 `;
 
 const ErrorMessage = styled.div`
@@ -70,13 +81,52 @@ const ErrorMessage = styled.div`
   border: 1px solid #f5c6cb;
 `;
 
-const ResponseBox = styled.pre`
-  background: #f9f9f9;
-  padding: 16px;
-  margin-top: 24px;
-  border-radius: 6px;
-  font-size: 0.95rem;
-  white-space: pre-wrap;
+// === החלפנו את ResponseBox ב-ResponseContainer מעוצב ===
+const ResponseContainer = styled.div`
+  background: white;
+  padding: 2rem;
+  margin-top: 32px;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  max-height: 70vh;
+  overflow-y: auto;
+  direction: rtl;
+
+  /* Custom scrollbar */
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+
+    &:hover {
+      background: #94a3b8;
+    }
+  }
+
+  @media (max-width: 768px) {
+    padding: 1.5rem;
+    max-height: 60vh;
+  }
+`;
+
+const ResponseHeader = styled.div`
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+  font-size: 1.1rem;
+  text-align: center;
 `;
 
 const Survey = () => {
@@ -193,11 +243,12 @@ const Survey = () => {
       {error && <ErrorMessage>{error}</ErrorMessage>}
 
       {aiPlan && (
-        <ResponseBox>
-          <strong>{t("aiPlanResponseLabel")}</strong>
-          <br />
-          {aiPlan}
-        </ResponseBox>
+        <ResponseContainer>
+          <ResponseHeader>
+            🎯 {t("aiPlanResponseLabel") || "תוכנית הקריירה שלך"}
+          </ResponseHeader>
+          <MarkdownRenderer content={aiPlan} />
+        </ResponseContainer>
       )}
     </Container>
   );

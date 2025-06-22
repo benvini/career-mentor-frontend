@@ -5,6 +5,9 @@ import { useTranslation } from "react-i18next";
 import { api } from "../api/api";
 import { AuthService } from "../api/authService";
 import type { Survey } from "../api/api";
+import MarkdownRenderer from "../utils/markdownRenderer";
+import { useContext } from "react";
+import { RTLContext } from "../contexts/rtlUtils";
 
 interface ApiErrorResponse {
   error?: string;
@@ -35,11 +38,10 @@ const Container = styled.div`
   min-height: calc(100vh - 70px);
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   padding: 40px 16px;
-  direction: ${({ theme }) => theme.direction};
 `;
 
 const DashboardHeader = styled.div`
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto 40px;
   text-align: center;
   animation: ${fadeInUp} 0.6s ease-out;
@@ -66,34 +68,15 @@ const Subtitle = styled.p`
   margin: 0;
 `;
 
-const MainContent = styled.div`
-  max-width: 1200px;
-  margin: 0 auto;
+const StatsSection = styled.div`
   display: grid;
-  grid-template-columns: ${({ theme }) =>
-    theme.direction === "rtl" ? "300px 1fr" : "1fr 300px"};
-  gap: 32px;
-  direction: ${({ theme }) => theme.direction};
-
-  @media (max-width: 1024px) {
-    grid-template-columns: 1fr;
-    gap: 24px;
-  }
-`;
-
-const PrimarySection = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
-`;
-
-const SidebarSection = styled.div`
-  display: flex;
-  flex-direction: column;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 24px;
+  margin-bottom: 32px;
 
-  @media (max-width: 1024px) {
-    order: -1;
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 16px;
   }
 `;
 
@@ -128,32 +111,59 @@ const Card = styled.div`
   }
 `;
 
-const SideCard = styled(Card)`
+const SidebarCard = styled.div<{ $isRTL: boolean }>`
+  background: white;
+  border-radius: 16px;
   padding: 24px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+  border: 1px solid #f8f9fa;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    ${({ $isRTL }) => ($isRTL ? "right: 0;" : "left: 0;")}
+    bottom: 0;
+    width: 4px;
+    background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+  }
 
   &:hover {
     transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
   }
 `;
 
-const CardTitleWrapper = styled.div`
+const CardTitleWrapper = styled.div<{ $isRTL: boolean }>`
   display: flex;
   align-items: center;
   gap: 12px;
-  flex-direction: ${({ theme }) =>
-    theme.direction === "rtl" ? "row-reverse" : "row"};
+  flex-direction: ${({ $isRTL }) => ($isRTL ? "row-reverse" : "row")};
   margin-bottom: 16px;
   width: 100%;
 `;
 
-const CardTitleText = styled.h2`
+const CardTitleText = styled.h2<{ $isRTL: boolean }>`
   font-size: 1.75rem;
   font-weight: 600;
   color: #343a40;
   margin: 0;
   flex: 1;
-  text-align: ${({ theme }) => (theme.direction === "rtl" ? "right" : "left")};
-  direction: ${({ theme }) => theme.direction};
+  text-align: ${({ $isRTL }) => ($isRTL ? "right" : "left")};
+  direction: ${({ $isRTL }) => ($isRTL ? "rtl" : "ltr")};
+`;
+
+const SidebarTitleText = styled.h3<{ $isRTL: boolean }>`
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #343a40;
+  margin: 0;
+  flex: 1;
+  text-align: ${({ $isRTL }) => ($isRTL ? "right" : "left")};
+  direction: ${({ $isRTL }) => ($isRTL ? "rtl" : "ltr")};
 `;
 
 const CardTitleIcon = styled.span`
@@ -161,77 +171,82 @@ const CardTitleIcon = styled.span`
   flex-shrink: 0;
 `;
 
-const SideCardTitleWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-direction: ${({ theme }) =>
-    theme.direction === "rtl" ? "row-reverse" : "row"};
-  margin-bottom: 16px;
-  width: 100%;
-`;
-
-const SideCardTitleText = styled.h3`
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #343a40;
-  margin: 0;
-  flex: 1;
-  text-align: ${({ theme }) => (theme.direction === "rtl" ? "right" : "left")};
-  direction: ${({ theme }) => theme.direction};
-`;
-
-const SideCardTitleIcon = styled.span`
-  font-size: 1rem;
+const SidebarTitleIcon = styled.span`
+  font-size: 1.1rem;
   flex-shrink: 0;
 `;
 
-const RTLTextWrapper = styled.div`
-  flex: 1;
-  text-align: ${({ theme }) => (theme.direction === "rtl" ? "right" : "left")};
-  direction: ${({ theme }) => theme.direction};
-`;
-
-const PlanContainer = styled.div`
+const PlanContainer = styled.div<{ $isRTL: boolean }>`
   background: linear-gradient(
     135deg,
     rgba(102, 126, 234, 0.05) 0%,
     rgba(118, 75, 162, 0.05) 100%
   );
   border-radius: 16px;
-  padding: 24px;
+  padding: 32px;
   border: 2px solid #e9ecef;
   position: relative;
-  direction: ${({ theme }) => theme.direction};
+  direction: ${({ $isRTL }) => ($isRTL ? "rtl" : "ltr")};
+
+  @media (max-width: 768px) {
+    padding: 24px;
+  }
 `;
 
-const PlanHeader = styled.div`
+const PlanHeader = styled.div<{ $isRTL: boolean }>`
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
+  align-items: flex-start;
+  margin-bottom: 24px;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 16px;
+  flex-direction: ${({ $isRTL }) => ($isRTL ? "row-reverse" : "row")};
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
 `;
 
-const PlanTitle = styled.h3`
-  font-size: 1.5rem;
+const PlanTitleSection = styled.div<{ $isRTL: boolean }>`
+  flex: 1;
+  min-width: 300px;
+  text-align: ${({ $isRTL }) => ($isRTL ? "right" : "left")};
+`;
+
+const PlanTitle = styled.h3<{ $isRTL: boolean }>`
+  font-size: 1.8rem;
   font-weight: 600;
   color: #343a40;
-  margin: 0;
+  margin: 0 0 8px 0;
+  text-align: ${({ $isRTL }) => ($isRTL ? "right" : "left")};
+
+  @media (max-width: 768px) {
+    font-size: 1.5rem;
+  }
 `;
 
 const LastUpdated = styled.span`
   color: #6c757d;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
 `;
 
-const PlanActions = styled.div`
+const PlanActions = styled.div<{ $isRTL: boolean }>`
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
-  flex-direction: ${({ theme }) =>
-    theme.direction === "rtl" ? "row-reverse" : "row"};
+  flex-direction: ${({ $isRTL }) => ($isRTL ? "row-reverse" : "row")};
+
+  @media (max-width: 768px) {
+    width: 100%;
+    justify-content: stretch;
+
+    & > * {
+      flex: 1;
+      min-width: 120px;
+    }
+  }
 `;
 
 const ActionButton = styled.button<{ $variant?: "primary" | "secondary" }>`
@@ -241,12 +256,13 @@ const ActionButton = styled.button<{ $variant?: "primary" | "secondary" }>`
       : "transparent"};
   color: ${(props) => (props.$variant === "primary" ? "white" : "#667eea")};
   border: 2px solid #667eea;
-  padding: 8px 16px;
-  font-size: 0.9rem;
+  padding: 10px 20px;
+  font-size: 0.95rem;
   font-weight: 500;
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s ease;
+  white-space: nowrap;
 
   &:hover {
     background: ${(props) =>
@@ -256,30 +272,51 @@ const ActionButton = styled.button<{ $variant?: "primary" | "secondary" }>`
     color: white;
     transform: translateY(-1px);
   }
+
+  @media (max-width: 768px) {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+  }
 `;
 
-const PlanContent = styled.pre`
+const PlanContent = styled.div<{ $isRTL: boolean }>`
   background: white;
-  padding: 24px;
-  border-radius: 12px;
-  font-size: 1rem;
-  line-height: 1.6;
-  white-space: pre-wrap;
-  color: #343a40;
+  padding: 2.5rem;
+  border-radius: 16px;
   border: 1px solid #e9ecef;
-  max-height: 400px;
+  max-height: 600px;
   overflow-y: auto;
-  margin: 0;
-  font-family: inherit;
-  text-align: ${({ theme }) => (theme.direction === "rtl" ? "right" : "left")};
-  direction: ${({ theme }) => theme.direction};
+  direction: ${({ $isRTL }) => ($isRTL ? "rtl" : "ltr")};
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+
+  &::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 5px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 5px;
+
+    &:hover {
+      background: #94a3b8;
+    }
+  }
+
+  @media (max-width: 768px) {
+    padding: 1.5rem;
+    max-height: 500px;
+  }
 `;
 
 const StatsGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 16px;
-  margin-bottom: 24px;
 `;
 
 const StatItem = styled.div`
@@ -315,12 +352,12 @@ const StatNumber = styled.div`
   margin-bottom: 4px;
 `;
 
-const StatLabel = styled.div`
+const StatLabel = styled.div<{ $isRTL: boolean }>`
   font-size: 0.9rem;
   color: #6c757d;
   font-weight: 500;
   text-align: center;
-  direction: ${({ theme }) => theme.direction};
+  direction: ${({ $isRTL }) => ($isRTL ? "rtl" : "ltr")};
 `;
 
 const QuickActionsList = styled.div`
@@ -329,8 +366,12 @@ const QuickActionsList = styled.div`
   gap: 12px;
 `;
 
-const QuickActionItem = styled.button`
-  background: white;
+const QuickActionItem = styled.button<{ $isRTL: boolean }>`
+  background: linear-gradient(
+    135deg,
+    rgba(102, 126, 234, 0.05) 0%,
+    rgba(118, 75, 162, 0.05) 100%
+  );
   border: 2px solid #e9ecef;
   padding: 16px;
   border-radius: 12px;
@@ -341,25 +382,41 @@ const QuickActionItem = styled.button`
   display: flex;
   align-items: center;
   gap: 12px;
-  flex-direction: ${({ theme }) =>
-    theme.direction === "rtl" ? "row-reverse" : "row"};
-  justify-content: ${({ theme }) =>
-    theme.direction === "rtl" ? "flex-end" : "flex-start"};
-  text-align: ${({ theme }) => (theme.direction === "rtl" ? "right" : "left")};
-  direction: ${({ theme }) => theme.direction};
+  flex-direction: ${({ $isRTL }) => ($isRTL ? "row-reverse" : "row")};
+  justify-content: ${({ $isRTL }) => ($isRTL ? "flex-end" : "flex-start")};
+  text-align: ${({ $isRTL }) => ($isRTL ? "right" : "left")};
+  direction: ${({ $isRTL }) => ($isRTL ? "rtl" : "ltr")};
   width: 100%;
 
   &:hover {
     border-color: #667eea;
-    background: rgba(102, 126, 234, 0.05);
-    transform: ${({ theme }) =>
-      theme.direction === "rtl" ? "translateX(-4px)" : "translateX(4px)"};
+    background: linear-gradient(
+      135deg,
+      rgba(102, 126, 234, 0.1) 0%,
+      rgba(118, 75, 162, 0.1) 100%
+    );
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
+  }
+
+  &:active {
+    transform: translateY(0);
   }
 `;
 
 const QuickActionIcon = styled.span`
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   flex-shrink: 0;
+  padding: 8px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+`;
+
+const QuickActionText = styled.div`
+  flex: 1;
+  font-size: 0.95rem;
+  font-weight: 600;
 `;
 
 const ActivityList = styled.div`
@@ -368,55 +425,71 @@ const ActivityList = styled.div`
   gap: 12px;
 `;
 
-const ActivityItem = styled.div`
-  padding: 12px 16px;
-  background: #f8f9fa;
-  border-radius: 8px;
+const ActivityItem = styled.div<{ $isRTL: boolean }>`
+  padding: 14px 16px;
+  background: linear-gradient(
+    135deg,
+    rgba(102, 126, 234, 0.03) 0%,
+    rgba(118, 75, 162, 0.03) 100%
+  );
+  border-radius: 10px;
   font-size: 0.9rem;
   color: #495057;
-  text-align: ${({ theme }) => (theme.direction === "rtl" ? "right" : "left")};
-  direction: ${({ theme }) => theme.direction};
+  text-align: ${({ $isRTL }) => ($isRTL ? "right" : "left")};
+  direction: ${({ $isRTL }) => ($isRTL ? "rtl" : "ltr")};
+  transition: all 0.2s ease;
 
-  ${({ theme }) =>
-    theme.direction === "rtl"
-      ? "border-right: 4px solid #667eea;"
-      : "border-left: 4px solid #667eea;"}
+  ${({ $isRTL }) =>
+    $isRTL
+      ? "border-right: 3px solid #667eea;"
+      : "border-left: 3px solid #667eea;"}
+
+  &:hover {
+    background: linear-gradient(
+      135deg,
+      rgba(102, 126, 234, 0.08) 0%,
+      rgba(118, 75, 162, 0.08) 100%
+    );
+    transform: ${({ $isRTL }) =>
+      $isRTL ? "translateX(-2px)" : "translateX(2px)"};
+  }
 `;
 
-const EmptyState = styled.div`
+const EmptyState = styled.div<{ $isRTL: boolean }>`
   text-align: center;
-  padding: 48px 24px;
+  padding: 80px 24px;
   color: #6c757d;
-  direction: ${({ theme }) => theme.direction};
+  direction: ${({ $isRTL }) => ($isRTL ? "rtl" : "ltr")};
 `;
 
 const EmptyIcon = styled.div`
-  font-size: 4rem;
-  margin-bottom: 16px;
+  font-size: 5rem;
+  margin-bottom: 24px;
   opacity: 0.5;
 `;
 
-const EmptyTitle = styled.h3`
-  font-size: 1.5rem;
-  margin-bottom: 8px;
+const EmptyTitle = styled.h3<{ $isRTL: boolean }>`
+  font-size: 2rem;
+  margin-bottom: 16px;
   color: #495057;
   text-align: center;
-  direction: ${({ theme }) => theme.direction};
+  direction: ${({ $isRTL }) => ($isRTL ? "rtl" : "ltr")};
 `;
 
-const EmptyText = styled.p`
-  margin-bottom: 24px;
+const EmptyText = styled.p<{ $isRTL: boolean }>`
+  margin-bottom: 32px;
   line-height: 1.6;
+  font-size: 1.1rem;
   text-align: center;
-  direction: ${({ theme }) => theme.direction};
+  direction: ${({ $isRTL }) => ($isRTL ? "rtl" : "ltr")};
 `;
 
 const CTAButton = styled.button`
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   border: none;
-  padding: 14px 28px;
-  font-size: 1rem;
+  padding: 16px 32px;
+  font-size: 1.1rem;
   font-weight: 600;
   border-radius: 12px;
   cursor: pointer;
@@ -428,7 +501,7 @@ const CTAButton = styled.button`
   }
 `;
 
-const ErrorMessage = styled.div`
+const ErrorMessage = styled.div<{ $isRTL: boolean }>`
   background: #f8d7da;
   color: #721c24;
   padding: 16px 20px;
@@ -437,9 +510,8 @@ const ErrorMessage = styled.div`
   display: flex;
   align-items: center;
   gap: 12px;
-  text-align: ${({ theme }) => (theme.direction === "rtl" ? "right" : "left")};
-  flex-direction: ${({ theme }) =>
-    theme.direction === "rtl" ? "row-reverse" : "row"};
+  text-align: ${({ $isRTL }) => ($isRTL ? "right" : "left")};
+  flex-direction: ${({ $isRTL }) => ($isRTL ? "row-reverse" : "row")};
 
   &::before {
     content: "⚠️";
@@ -471,14 +543,22 @@ const LoadingSpinner = styled.div`
 `;
 
 const Dashboard = () => {
-  const { t } = useTranslation("dashboardScreen");
+  const { t, i18n } = useTranslation("dashboardScreen");
   const [surveys, setSurveys] = useState<Survey[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [userEmail, setUserEmail] = useState("");
   const navigate = useNavigate();
 
-  // Helper functions for icons
+  const { isRTL, direction } = useContext(RTLContext);
+
+  console.log("Dashboard RTL:", {
+    language: i18n.language,
+    isRTL,
+    direction,
+    timestamp: Date.now(),
+  });
+
   const getCardIcon = (title: string) => {
     if (title.includes("Plan") || title.includes("תוכנית")) return "🎯";
     if (title.includes("Progress") || title.includes("התקדמות")) return "📊";
@@ -503,33 +583,32 @@ const Dashboard = () => {
     return "▶️";
   };
 
-  // Render functions for titles with icons
   const renderCardTitle = (titleKey: string) => {
     const title = t(titleKey);
     return (
-      <CardTitleWrapper>
-        <CardTitleText>{title}</CardTitleText>
+      <CardTitleWrapper $isRTL={isRTL}>
+        <CardTitleText $isRTL={isRTL}>{title}</CardTitleText>
         <CardTitleIcon>{getCardIcon(title)}</CardTitleIcon>
       </CardTitleWrapper>
     );
   };
 
-  const renderSideCardTitle = (titleKey: string) => {
+  const renderSidebarTitle = (titleKey: string) => {
     const title = t(titleKey);
     return (
-      <SideCardTitleWrapper>
-        <SideCardTitleText>{title}</SideCardTitleText>
-        <SideCardTitleIcon>{getCardIcon(title)}</SideCardTitleIcon>
-      </SideCardTitleWrapper>
+      <CardTitleWrapper $isRTL={isRTL}>
+        <SidebarTitleText $isRTL={isRTL}>{title}</SidebarTitleText>
+        <SidebarTitleIcon>{getCardIcon(title)}</SidebarTitleIcon>
+      </CardTitleWrapper>
     );
   };
 
   const renderQuickActionItem = (textKey: string, onClick?: () => void) => {
     const text = t(textKey);
     return (
-      <QuickActionItem onClick={onClick}>
+      <QuickActionItem $isRTL={isRTL} onClick={onClick}>
         <QuickActionIcon>{getQuickActionIcon(text)}</QuickActionIcon>
-        <RTLTextWrapper>{text}</RTLTextWrapper>
+        <QuickActionText>{text}</QuickActionText>
       </QuickActionItem>
     );
   };
@@ -600,7 +679,6 @@ const Dashboard = () => {
     try {
       const response = await api.surveys.export(surveyId, "pdf");
 
-      // Create download link
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement("a");
       link.href = url;
@@ -627,6 +705,10 @@ const Dashboard = () => {
 
     fetchSurveys();
   }, [navigate, fetchSurveys]);
+
+  useEffect(() => {
+    console.log("Language changed:", i18n.language, "isRTL:", isRTL);
+  }, [i18n.language, isRTL]);
 
   const getLatestSurvey = (): Survey | null => {
     if (surveys.length === 0) return null;
@@ -663,7 +745,7 @@ const Dashboard = () => {
   const latestSurvey = getLatestSurvey();
 
   return (
-    <Container>
+    <Container key={`container-${direction}`} style={{ direction }}>
       <DashboardHeader>
         <WelcomeTitle>
           {t("welcome").replace("{{name}}", getUserName())}
@@ -671,117 +753,329 @@ const Dashboard = () => {
         <Subtitle>{t("subtitle")}</Subtitle>
       </DashboardHeader>
 
-      <MainContent>
-        <PrimarySection>
-          {latestSurvey?.aiPlan ? (
-            <Card>
-              {renderCardTitle("sections.currentPlan")}
-              <PlanContainer>
-                <PlanHeader>
-                  <PlanTitle>{t("currentPlan.title")}</PlanTitle>
-                  <LastUpdated>
-                    {t("currentPlan.lastUpdated").replace(
-                      "{{date}}",
-                      formatDate(latestSurvey.updatedAt)
-                    )}
-                  </LastUpdated>
-                </PlanHeader>
-                <PlanActions>
-                  <ActionButton $variant="primary" onClick={handleRetakeSurvey}>
-                    {t("currentPlan.regenerate")}
-                  </ActionButton>
-                  {latestSurvey.id && (
-                    <ActionButton
-                      $variant="secondary"
-                      onClick={() => handleRegeneratePlan(latestSurvey.id!)}
-                    >
-                      Regenerate Plan
-                    </ActionButton>
-                  )}
-                  <ActionButton
-                    $variant="secondary"
-                    onClick={() =>
-                      latestSurvey.id && handleDownloadPlan(latestSurvey.id)
-                    }
-                  >
-                    {t("currentPlan.download")}
-                  </ActionButton>
-                  <ActionButton $variant="secondary">
-                    {t("currentPlan.share")}
-                  </ActionButton>
-                </PlanActions>
-                <PlanContent>{latestSurvey.aiPlan}</PlanContent>
-              </PlanContainer>
-            </Card>
-          ) : (
-            <Card>
-              <EmptyState>
-                <EmptyIcon>🎯</EmptyIcon>
-                <EmptyTitle>{t("messages.noPlan")}</EmptyTitle>
-                <EmptyText>{t("sections.overview")}</EmptyText>
-                <CTAButton onClick={handleRetakeSurvey}>
-                  {t("quickActions.retakeSurvey")}
-                </CTAButton>
-              </EmptyState>
-            </Card>
-          )}
+      <div
+        style={{
+          maxWidth: "1400px",
+          margin: "0 auto",
+          display: "flex",
+          gap: "32px",
+          direction,
+          flexDirection: isRTL ? "row-reverse" : "row",
+        }}
+      >
+        {isRTL ? (
+          <>
+            <div
+              style={{
+                flex: 1,
+                minWidth: 0,
+                display: "flex",
+                flexDirection: "column",
+                gap: "32px",
+              }}
+            >
+              <StatsSection>
+                <Card>
+                  {renderCardTitle("sections.overview")}
+                  <StatsGrid>
+                    <StatItem>
+                      <StatNumber>{surveys.length}</StatNumber>
+                      <StatLabel $isRTL={isRTL}>
+                        {t("stats.plansGenerated")}
+                      </StatLabel>
+                    </StatItem>
+                    <StatItem>
+                      <StatNumber>0</StatNumber>
+                      <StatLabel $isRTL={isRTL}>
+                        {t("stats.goalsCompleted")}
+                      </StatLabel>
+                    </StatItem>
+                  </StatsGrid>
+                </Card>
+              </StatsSection>
 
-          {error && (
-            <Card>
-              <ErrorMessage>{error}</ErrorMessage>
-            </Card>
-          )}
-        </PrimarySection>
+              {/* === התוכנית === */}
+              {latestSurvey?.aiPlan ? (
+                <Card>
+                  {renderCardTitle("sections.currentPlan")}
+                  <PlanContainer $isRTL={isRTL}>
+                    <PlanHeader $isRTL={isRTL}>
+                      <PlanTitleSection $isRTL={isRTL}>
+                        <PlanTitle $isRTL={isRTL}>
+                          {t("currentPlan.title")}
+                        </PlanTitle>
+                        <LastUpdated>
+                          {t("currentPlan.lastUpdated").replace(
+                            "{{date}}",
+                            formatDate(latestSurvey.updatedAt)
+                          )}
+                        </LastUpdated>
+                      </PlanTitleSection>
 
-        <SidebarSection>
-          <SideCard>
-            {renderSideCardTitle("sections.overview")}
-            <StatsGrid>
-              <StatItem>
-                <StatNumber>{surveys.length}</StatNumber>
-                <StatLabel>{t("stats.plansGenerated")}</StatLabel>
-              </StatItem>
-              <StatItem>
-                <StatNumber>0</StatNumber>
-                <StatLabel>{t("stats.goalsCompleted")}</StatLabel>
-              </StatItem>
-            </StatsGrid>
-          </SideCard>
+                      <PlanActions $isRTL={isRTL}>
+                        <ActionButton
+                          $variant="primary"
+                          onClick={handleRetakeSurvey}
+                        >
+                          {t("currentPlan.regenerate")}
+                        </ActionButton>
+                        {latestSurvey.id && (
+                          <ActionButton
+                            $variant="secondary"
+                            onClick={() =>
+                              handleRegeneratePlan(latestSurvey.id!)
+                            }
+                          >
+                            Regenerate Plan
+                          </ActionButton>
+                        )}
+                        <ActionButton
+                          $variant="secondary"
+                          onClick={() =>
+                            latestSurvey.id &&
+                            handleDownloadPlan(latestSurvey.id)
+                          }
+                        >
+                          {t("currentPlan.download")}
+                        </ActionButton>
+                        <ActionButton $variant="secondary">
+                          {t("currentPlan.share")}
+                        </ActionButton>
+                      </PlanActions>
+                    </PlanHeader>
 
-          <SideCard>
-            {renderSideCardTitle("quickActions.title")}
-            <QuickActionsList>
-              {renderQuickActionItem(
-                "quickActions.retakeSurvey",
-                handleRetakeSurvey
-              )}
-              {renderQuickActionItem("quickActions.updateGoals", () =>
-                navigate("/survey")
-              )}
-              {renderQuickActionItem("quickActions.viewResources")}
-              {renderQuickActionItem("quickActions.trackProgress")}
-            </QuickActionsList>
-          </SideCard>
-
-          <SideCard>
-            {renderSideCardTitle("recentActivity.title")}
-            <ActivityList>
-              {surveys.length > 0 ? (
-                surveys
-                  .slice(-3)
-                  .reverse()
-                  .map((survey, index) => (
-                    <ActivityItem key={survey.id || index}>
-                      {t("surveyCompletedOn")} {formatDate(survey.createdAt)}
-                    </ActivityItem>
-                  ))
+                    <PlanContent $isRTL={isRTL}>
+                      <MarkdownRenderer content={latestSurvey.aiPlan} />
+                    </PlanContent>
+                  </PlanContainer>
+                </Card>
               ) : (
-                <ActivityItem>{t("recentActivity.noActivity")}</ActivityItem>
+                <Card>
+                  <EmptyState $isRTL={isRTL}>
+                    <EmptyIcon>🎯</EmptyIcon>
+                    <EmptyTitle $isRTL={isRTL}>
+                      {t("messages.noPlan")}
+                    </EmptyTitle>
+                    <EmptyText $isRTL={isRTL}>
+                      {t("sections.overview")}
+                    </EmptyText>
+                    <CTAButton onClick={handleRetakeSurvey}>
+                      {t("quickActions.retakeSurvey")}
+                    </CTAButton>
+                  </EmptyState>
+                </Card>
               )}
-            </ActivityList>
-          </SideCard>
-        </SidebarSection>
-      </MainContent>
+
+              {error && (
+                <Card>
+                  <ErrorMessage $isRTL={isRTL}>{error}</ErrorMessage>
+                </Card>
+              )}
+            </div>
+
+            <div
+              style={{
+                width: "320px",
+                flexShrink: 0,
+                display: "flex",
+                flexDirection: "column",
+                gap: "24px",
+              }}
+            >
+              <SidebarCard $isRTL={isRTL}>
+                {renderSidebarTitle("quickActions.title")}
+                <QuickActionsList>
+                  {renderQuickActionItem(
+                    "quickActions.retakeSurvey",
+                    handleRetakeSurvey
+                  )}
+                  {renderQuickActionItem("quickActions.updateGoals", () =>
+                    navigate("/survey")
+                  )}
+                  {renderQuickActionItem("quickActions.viewResources")}
+                  {renderQuickActionItem("quickActions.trackProgress")}
+                </QuickActionsList>
+              </SidebarCard>
+
+              <SidebarCard $isRTL={isRTL}>
+                {renderSidebarTitle("recentActivity.title")}
+                <ActivityList>
+                  {surveys.length > 0 ? (
+                    surveys
+                      .slice(-3)
+                      .reverse()
+                      .map((survey, index) => (
+                        <ActivityItem key={survey.id || index} $isRTL={isRTL}>
+                          {t("surveyCompletedOn")}{" "}
+                          {formatDate(survey.createdAt)}
+                        </ActivityItem>
+                      ))
+                  ) : (
+                    <ActivityItem $isRTL={isRTL}>
+                      {t("recentActivity.noActivity")}
+                    </ActivityItem>
+                  )}
+                </ActivityList>
+              </SidebarCard>
+            </div>
+          </>
+        ) : (
+          <>
+            <div
+              style={{
+                width: "320px",
+                flexShrink: 0,
+                display: "flex",
+                flexDirection: "column",
+                gap: "24px",
+              }}
+            >
+              <SidebarCard $isRTL={isRTL}>
+                {renderSidebarTitle("quickActions.title")}
+                <QuickActionsList>
+                  {renderQuickActionItem(
+                    "quickActions.retakeSurvey",
+                    handleRetakeSurvey
+                  )}
+                  {renderQuickActionItem("quickActions.updateGoals", () =>
+                    navigate("/survey")
+                  )}
+                  {renderQuickActionItem("quickActions.viewResources")}
+                  {renderQuickActionItem("quickActions.trackProgress")}
+                </QuickActionsList>
+              </SidebarCard>
+
+              <SidebarCard $isRTL={isRTL}>
+                {renderSidebarTitle("recentActivity.title")}
+                <ActivityList>
+                  {surveys.length > 0 ? (
+                    surveys
+                      .slice(-3)
+                      .reverse()
+                      .map((survey, index) => (
+                        <ActivityItem key={survey.id || index} $isRTL={isRTL}>
+                          {t("surveyCompletedOn")}{" "}
+                          {formatDate(survey.createdAt)}
+                        </ActivityItem>
+                      ))
+                  ) : (
+                    <ActivityItem $isRTL={isRTL}>
+                      {t("recentActivity.noActivity")}
+                    </ActivityItem>
+                  )}
+                </ActivityList>
+              </SidebarCard>
+            </div>
+
+            <div
+              style={{
+                flex: 1,
+                minWidth: 0,
+                display: "flex",
+                flexDirection: "column",
+                gap: "32px",
+              }}
+            >
+              <StatsSection>
+                <Card>
+                  {renderCardTitle("sections.overview")}
+                  <StatsGrid>
+                    <StatItem>
+                      <StatNumber>{surveys.length}</StatNumber>
+                      <StatLabel $isRTL={isRTL}>
+                        {t("stats.plansGenerated")}
+                      </StatLabel>
+                    </StatItem>
+                    <StatItem>
+                      <StatNumber>0</StatNumber>
+                      <StatLabel $isRTL={isRTL}>
+                        {t("stats.goalsCompleted")}
+                      </StatLabel>
+                    </StatItem>
+                  </StatsGrid>
+                </Card>
+              </StatsSection>
+
+              {latestSurvey?.aiPlan ? (
+                <Card>
+                  {renderCardTitle("sections.currentPlan")}
+                  <PlanContainer $isRTL={isRTL}>
+                    <PlanHeader $isRTL={isRTL}>
+                      <PlanTitleSection $isRTL={isRTL}>
+                        <PlanTitle $isRTL={isRTL}>
+                          {t("currentPlan.title")}
+                        </PlanTitle>
+                        <LastUpdated>
+                          {t("currentPlan.lastUpdated").replace(
+                            "{{date}}",
+                            formatDate(latestSurvey.updatedAt)
+                          )}
+                        </LastUpdated>
+                      </PlanTitleSection>
+
+                      <PlanActions $isRTL={isRTL}>
+                        <ActionButton
+                          $variant="primary"
+                          onClick={handleRetakeSurvey}
+                        >
+                          {t("currentPlan.regenerate")}
+                        </ActionButton>
+                        {latestSurvey.id && (
+                          <ActionButton
+                            $variant="secondary"
+                            onClick={() =>
+                              handleRegeneratePlan(latestSurvey.id!)
+                            }
+                          >
+                            Regenerate Plan
+                          </ActionButton>
+                        )}
+                        <ActionButton
+                          $variant="secondary"
+                          onClick={() =>
+                            latestSurvey.id &&
+                            handleDownloadPlan(latestSurvey.id)
+                          }
+                        >
+                          {t("currentPlan.download")}
+                        </ActionButton>
+                        <ActionButton $variant="secondary">
+                          {t("currentPlan.share")}
+                        </ActionButton>
+                      </PlanActions>
+                    </PlanHeader>
+
+                    <PlanContent $isRTL={isRTL}>
+                      <MarkdownRenderer content={latestSurvey.aiPlan} />
+                    </PlanContent>
+                  </PlanContainer>
+                </Card>
+              ) : (
+                <Card>
+                  <EmptyState $isRTL={isRTL}>
+                    <EmptyIcon>🎯</EmptyIcon>
+                    <EmptyTitle $isRTL={isRTL}>
+                      {t("messages.noPlan")}
+                    </EmptyTitle>
+                    <EmptyText $isRTL={isRTL}>
+                      {t("sections.overview")}
+                    </EmptyText>
+                    <CTAButton onClick={handleRetakeSurvey}>
+                      {t("quickActions.retakeSurvey")}
+                    </CTAButton>
+                  </EmptyState>
+                </Card>
+              )}
+
+              {error && (
+                <Card>
+                  <ErrorMessage $isRTL={isRTL}>{error}</ErrorMessage>
+                </Card>
+              )}
+            </div>
+          </>
+        )}
+      </div>
     </Container>
   );
 };
